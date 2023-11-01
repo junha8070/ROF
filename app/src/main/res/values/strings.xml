@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Xlnt_TimeLine</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="add_timeline">ROF 추가</string>
+    <string name="view_timeline">ROF 보기</string>
+    <string name="not_check_time">체크시 날짜의 특정 시간에 알림을 보내드릴게요.\n*현재 시간 이후로만 설정 가능해요.</string>
+    <string name="importance_hint">중요도(글자 크기가 달라집니다.)</string>
+    <string name="zero">0</string>
+    <string name="add">추가하기</string>
+    <string name="category_eng">Category</string>
+    <string name="category">카테고리</string>
+    <string name="date">날짜</string>
+    <string name="contents">내용</string>
+    <string name="detail">상세보기</string>
+    <string name="memo">메모</string>
+    <string name="nothing_contents">오른쪽 상단과 하단의\n+ 버튼을 눌러\n카테고리와 타임라인을\n추가해보세요.</string>
+
+    <string name="search_hint">뭔가 빠르게 찾아보자...</string>
+
+    <string name="require_selection">카테고리를 선택해주세요.</string>
+
+    <string name="year">년</string>
+    <string name="month">월</string>
+    <string name="Sun">일</string>
+    <string name="Mon">월</string>
+    <string name="Tue">화</string>
+    <string name="Wed">수</string>
+    <string name="Thu">목</string>
+    <string name="Fri">금</string>
+    <string name="Sat">토</string>
+    <string name="NothingAlarm">더 나은 어플을 제작하기 위해 노력중이에요!</string>
+    <string name="DevNews">개발 소식</string>
+    <string name="gotoupdate">업데이트 하러가기</string>
+</resources>

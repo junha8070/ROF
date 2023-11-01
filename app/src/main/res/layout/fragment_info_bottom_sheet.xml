@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".BottomSheetFragment.AddROFBottomSheetFragment">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearance="@style/TopCorner"
+        app:strokeWidth="0dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_close"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="0dp"
+                app:icon="@drawable/baseline_keyboard_arrow_down_24"
+                app:iconGravity="textTop"
+                app:iconPadding="0dp"
+                app:iconTint="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:autoSizeTextType="uniform"
+                android:gravity="center"
+                android:lines="1"
+                android:text="@string/DevNews"
+                android:textSize="20sp"
+                app:layout_constraintDimensionRatio="H,1:10"
+                app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
+                app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
+                app:layout_constraintTop_toBottomOf="@+id/btn_close" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:autoSizeTextType="uniform"
+                android:gravity="center"
+                android:text="@string/NothingAlarm"
+                android:textSize="15sp"
+                app:layout_constraintDimensionRatio="H,1:10"
+                app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
+                app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title" />
+
+            <LinearLayout
+                android:id="@+id/now_ver_layout"
+                android:layout_width="0dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
+                app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
+                app:layout_constraintTop_toBottomOf="@+id/tv_content">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_now_ver_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:gravity="end"
+                    android:text="현재 버전 : "
+                    android:textSize="15sp" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_now_ver"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:gravity="start"
+                    android:text="0.0.0"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/latest_ver_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
+                app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
+                app:layout_constraintTop_toBottomOf="@+id/now_ver_layout">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_latest_ver_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:gravity="end"
+                    android:text="최신 버전 : "
+                    android:textSize="15sp" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_latest_ver"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:gravity="start"
+                    android:text="0.0.0"
+                    android:textSize="15sp" />
+
+
+            </LinearLayout>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/gl_entire_ver_left"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.05" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/gl_entire_ver_right"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.95" />
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_del"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:backgroundTint="@color/Endeavour"
+                android:layout_marginTop="20dp"
+                android:text="@string/gotoupdate"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
+                app:layout_constraintTop_toBottomOf="@+id/latest_ver_layout" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

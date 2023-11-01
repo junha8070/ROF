@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragment.SettingFragment">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        app:titleTextAppearance="@style/Toolbar.TitleText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="설정" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_entire_ver_left"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_entire_ver_right"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_timeline_ver"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <LinearLayout
+        android:id="@+id/layout_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toStartOf="@+id/gl_timeline_ver"
+        app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:fontFamily="@font/seoulnamsan_m"
+                android:text="같은 날짜 생략해서 보기"
+                android:textSize="17sp" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:breakStrategy="simple"
+                android:fontFamily="@font/seoulnamsan_l"
+                android:lines="2"
+                android:text="날짜가 같은 타임라인은 한 날짜로 묶어서 보여줍니다."
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/switch_date_skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/layout_date"
+        app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
+        app:layout_constraintStart_toStartOf="@+id/gl_timeline_ver"
+        app:layout_constraintTop_toTopOf="@+id/layout_date" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:dividerColor="@color/divider_gray"
+        app:dividerThickness="0.1dp"
+        app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
+        app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
+        app:layout_constraintTop_toBottomOf="@+id/layout_date" />
+
+    <LinearLayout
+        android:id="@+id/layout_alarm"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toStartOf="@+id/gl_timeline_ver"
+        app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
+        app:layout_constraintTop_toBottomOf="@+id/divider_date">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="알람"
+                android:layout_marginBottom="5dp"
+                android:fontFamily="@font/seoulnamsan_m"
+                android:textSize="17sp"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/seoulnamsan_l"
+                android:breakStrategy="simple"
+                android:text="사용자가 설정한 알람을 받습니다."
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/switch_alarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/layout_alarm"
+        app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
+        app:layout_constraintStart_toStartOf="@+id/gl_timeline_ver"
+        app:layout_constraintTop_toTopOf="@+id/layout_alarm" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:visibility="invisible"
+        android:id="@+id/divider_alarm"
+        android:layout_width="0dp"
+        android:layout_marginTop="10dp"
+        app:dividerColor="@color/divider_gray"
+        android:layout_height="0.5dp"
+        app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
+        app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
+        app:layout_constraintTop_toBottomOf="@+id/layout_alarm" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "232054558598",
+    "project_id": "xlnt-todo",
+    "storage_bucket": "xlnt-todo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:232054558598:android:178d6bf0ff827ea737e607",
+        "android_client_info": {
+          "package_name": "com.xlntsmmr.xlnt_timeline"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjCX4OLkbzJ6r_SjOlod89R8ECYp9kD9I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

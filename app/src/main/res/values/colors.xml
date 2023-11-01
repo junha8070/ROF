@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="purple_18004A">#18004A</color>
+    <color name="purple_533A93">#533A93</color>
+    <color name="purple_E5D2FE">#E5D2FE</color>
+    <color name="purple_F3EEF7">#F3EEF7</color>
+
+    <!-- dark 모드 배경색은 검은색 -->
+    <color name="background_color">@color/black</color>
+    <!-- light 모드 배경색은 하얀색 -->
+    <color name="background_color_light">@color/white</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="gray">#505050</color>
+    <color name="yellow">#FFEB3B</color>
+    <color name="divider_gray">#DDDDDD</color>
+
+
+    <!-- 블루 계역-->
+    <color name="Resolution_Blue">#03257E</color>
+    <color name="Biscay">#1C3775</color>
+    <color name="Endeavour">#0057A1</color>
+    <color name="Regent_Gray">#7A939C</color>
+    <color name="Polo_Blue">#9BB7D4</color>
+
+    <color name="search_gray">#F4F4F4</color>
+
+
+    <!-- 밝은 계열-->
+    <color name="white_lilac">#f8f3fc</color>
+    <color name="perano">#a9d4f4</color>
+    <color name="neptune">#063a51</color>
+    <color name="grandis">#fed081</color>
+    <color name="carnation">#f96c6c</color>
+
+    <!--초록-->
+    <color name="Green_1">#A0C0B1</color>
+    <color name="Green_2">#B2CBBF</color>
+    <color name="Green_3">#C5D9CE</color>
+    <color name="Green_4">#D8E6DD</color>
+    <color name="Green_5">#EBF3F0</color>
+
+    <color name="background_gray">#F3F5FA</color>
+
+    <color name="blank">#B0B0B0</color>
+
+    <!--상태-->
+    <color name="ready_gray">#FF9B9B</color>
+    <color name="onGoing_green">#FFFEC4</color>
+    <color name="finish_blue">#CBFFA9</color>
+    <color name="sub_orange_1">#F3D466</color>
+    <color name="sub_orange_2">#F5B039</color>
+    <color name="main_orange">#f57e00</color>
+</resources>
