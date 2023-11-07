@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -62,6 +63,13 @@ public class StatusEntireListFragment extends Fragment {
 
         Bundle bundle = getArguments();
         int status = bundle.getInt("status");
+
+        binding.btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(getView()).navigate(R.id.action_statusEntireListFragment_to_homeFragment);
+            }
+        });
 
         switch (status) {
             case 0:

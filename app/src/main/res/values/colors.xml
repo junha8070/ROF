@@ -48,10 +48,12 @@
     <color name="blank">#B0B0B0</color>
 
     <!--상태-->
-    <color name="ready_gray">#FF9B9B</color>
-    <color name="onGoing_green">#FFFEC4</color>
-    <color name="finish_blue">#CBFFA9</color>
+    <color name="ready_gray">#F34C5E</color>
+    <color name="onGoing_green">#FBBA30</color>
+    <color name="finish_blue">#1DBE6C</color>
     <color name="sub_orange_1">#F3D466</color>
     <color name="sub_orange_2">#F5B039</color>
-    <color name="main_orange">#f57e00</color>
+    <color name="main_orange">#367DFD</color>
+
+    <color name="bottomSheetBackground_dark">#222222</color>
 </resources>

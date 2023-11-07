@@ -27,6 +27,7 @@
                 android:fontFamily="@font/seoulnamsan_b"
                 android:lines="1"
                 android:text="title"
+                android:backgroundTint="@color/search_gray"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"

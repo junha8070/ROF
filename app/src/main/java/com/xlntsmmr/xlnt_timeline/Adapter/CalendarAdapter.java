@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -61,10 +62,10 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         finish_item = false;
 
         if (calendarDayDTO != null) {
-//            holder.mcv_status.setVisibility(View.VISIBLE);
-//            holder.iv_status_top.setVisibility(View.VISIBLE);
-//            holder.iv_status_middle.setVisibility(View.VISIBLE);
-//            holder.iv_status_bottom.setVisibility(View.VISIBLE);
+            holder.mcv_status.setVisibility(View.VISIBLE);
+            holder.iv_status_top.setVisibility(View.VISIBLE);
+            holder.iv_status_middle.setVisibility(View.VISIBLE);
+            holder.iv_status_bottom.setVisibility(View.VISIBLE);
             holder.cgDay.setVisibility(View.VISIBLE);
             holder.cgDay.setText(String.valueOf(calendarDayDTO.getDayOfMonth()));
             holder.cgDay.setChecked(calendarDayDTO.isSelected());
@@ -88,46 +89,49 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
             }
 
             // 상태에 따라 이미지 설정
-//            if (ready_item && !onGoing_item && !finish_item) {
-//                holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
-//                holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
-//                holder.iv_status_bottom.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
-//            } else if (!ready_item && onGoing_item && !finish_item) {
-//                holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
-//                holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
-//                holder.iv_status_bottom.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
-//            } else if (!ready_item && !onGoing_item && finish_item) {
-//                holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
-//                holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
-//                holder.iv_status_bottom.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
-//            } else if (ready_item && onGoing_item && !finish_item) {
-//                holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
-//                holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
-//                holder.iv_status_bottom.setVisibility(View.GONE);
-//            } else if (ready_item && !onGoing_item && finish_item) {
-//                holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
-//                holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
-//                holder.iv_status_bottom.setVisibility(View.GONE);
-//            } else if (!ready_item && onGoing_item && finish_item) {
-//                holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
-//                holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
-//                holder.iv_status_bottom.setVisibility(View.GONE);
-//            } else if (ready_item && onGoing_item && finish_item) {
-//                holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
-//                holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
-//                holder.iv_status_bottom.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
-//            } else {
-//                holder.mcv_status.setCardBackgroundColor(0);
-//                holder.iv_status_top.setCardBackgroundColor(0);
-//                holder.iv_status_middle.setCardBackgroundColor(0);
-//                holder.iv_status_bottom.setCardBackgroundColor(0);
-//            }
-//        } else {
-//            holder.mcv_status.setVisibility(View.GONE);
-//            holder.iv_status_top.setVisibility(View.GONE);
-//            holder.iv_status_middle.setVisibility(View.GONE);
-//            holder.iv_status_bottom.setVisibility(View.GONE);
-//            holder.cgDay.setVisibility(View.GONE);
+            if (ready_item && !onGoing_item && !finish_item) {
+                holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
+                holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
+                holder.iv_status_bottom.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
+            } else if (!ready_item && onGoing_item && !finish_item) {
+                holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
+                holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
+                holder.iv_status_bottom.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
+            } else if (!ready_item && !onGoing_item && finish_item) {
+                holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
+                holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
+                holder.iv_status_bottom.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
+            } else if (ready_item && onGoing_item && !finish_item) {
+                holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
+                holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
+                holder.iv_status_bottom.setVisibility(View.GONE);
+            } else if (ready_item && !onGoing_item && finish_item) {
+                holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
+                holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
+                holder.iv_status_bottom.setVisibility(View.GONE);
+            } else if (!ready_item && onGoing_item && finish_item) {
+                holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
+                holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
+                holder.iv_status_bottom.setVisibility(View.GONE);
+            } else if (ready_item && onGoing_item && finish_item) {
+                holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
+                holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
+                holder.iv_status_bottom.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
+            } else {
+                holder.mcv_status.setCardBackgroundColor(0);
+                holder.iv_status_top.setAlpha(0.5f);
+                holder.iv_status_middle.setAlpha(0.5f);
+                holder.iv_status_bottom.setAlpha(0.5f);
+                holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.background_gray));
+                holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.background_gray));
+                holder.iv_status_bottom.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.background_gray));
+            }
+        } else {
+            holder.mcv_status.setVisibility(View.GONE);
+            holder.iv_status_top.setVisibility(View.GONE);
+            holder.iv_status_middle.setVisibility(View.GONE);
+            holder.iv_status_bottom.setVisibility(View.GONE);
+            holder.cgDay.setVisibility(View.GONE);
         }
 
 
@@ -157,15 +161,15 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-//        MaterialCardView mcv_status, iv_status_top, iv_status_middle, iv_status_bottom;
+        MaterialCardView mcv_status, iv_status_top, iv_status_middle, iv_status_bottom;
         Chip cgDay;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-//            mcv_status = itemView.findViewById(R.id.mcv_status);
-//            iv_status_top = itemView.findViewById(R.id.iv_status_top);
-//            iv_status_middle = itemView.findViewById(R.id.iv_status_middle);
-//            iv_status_bottom = itemView.findViewById(R.id.iv_status_bottom);
+            mcv_status = itemView.findViewById(R.id.mcv_status);
+            iv_status_top = itemView.findViewById(R.id.iv_status_top);
+            iv_status_middle = itemView.findViewById(R.id.iv_status_middle);
+            iv_status_bottom = itemView.findViewById(R.id.iv_status_bottom);
             cgDay = itemView.findViewById(R.id.cg_day);
         }
 

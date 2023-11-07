@@ -6,188 +6,163 @@
     android:layout_height="wrap_content"
     tools:context=".BottomSheetFragment.AddROFBottomSheetFragment">
 
-    <com.google.android.material.card.MaterialCardView
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_close"
+        style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        app:icon="@drawable/baseline_keyboard_arrow_down_24"
+        app:iconGravity="textTop"
+        app:iconTint="@color/main_orange"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_entire_ver_left"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_entire_ver_right"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_date"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:hint="날짜"
+        app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
+        app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
+        app:layout_constraintTop_toBottomOf="@+id/btn_close">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_date"
+            android:inputType="none"
+            android:layout_width="match_parent"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_height="match_parent"
+            android:lines="1"
+            android:maxLines="1" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_contents"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/contents"
+        android:maxWidth="488dp"
+        app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
+        app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
+        app:layout_constraintTop_toBottomOf="@+id/layout_date">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_contents"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:imeOptions="actionNext"
+            android:lines="1"
+            android:maxWidth="488dp"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_memo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:hint="@string/memo"
+        android:maxWidth="488dp"
+        app:boxBackgroundColor="@color/transparent"
+        app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
+        app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
+        app:layout_constraintTop_toBottomOf="@+id/layout_contents">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edt_memo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:lines="1"
+            android:maxWidth="488dp"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tv_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/category"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
+        app:layout_constraintTop_toBottomOf="@+id/layout_memo" />
+
+    <TextView
+        android:id="@+id/tv_require_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="@string/require_selection"
+        android:textColor="@color/carnation"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_category"
+        app:layout_constraintStart_toEndOf="@+id/tv_category"
+        app:layout_constraintTop_toTopOf="@+id/tv_category" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/cg_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
+        app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
+        app:layout_constraintTop_toBottomOf="@+id/tv_category"
+        app:singleSelection="true" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_del"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/main_orange"
+        android:text="삭제하기"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@+id/btn_edit"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
+        app:layout_constraintTop_toBottomOf="@+id/cg_category" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_edit"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/main_orange"
+        android:text="수정하기"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_del"
+        app:layout_constraintTop_toBottomOf="@+id/cg_category" />
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearance="@style/TopCorner"
-        app:strokeWidth="0dp">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_close"
-                style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                app:icon="@drawable/baseline_keyboard_arrow_down_24"
-                app:iconGravity="textTop"
-                app:iconTint="@color/black"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/gl_entire_ver_left"
-                android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.05" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/gl_entire_ver_right"
-                android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.95" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_contents"
-                style="@style/Widget.Material3.TextInputLayout.FilledBox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="@string/contents"
-                android:maxWidth="488dp"
-                app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
-                app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
-                app:layout_constraintTop_toBottomOf="@+id/btn_close">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edt_contents"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:maxWidth="488dp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <LinearLayout
-                android:id="@+id/layout_date"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
-                app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
-                app:layout_constraintTop_toBottomOf="@+id/layout_contents">
-
-                <NumberPicker
-                    android:id="@+id/year_picker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:max="2100"
-                    android:min="1900" />
-
-                <NumberPicker
-                    android:id="@+id/month_picker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:max="12"
-                    android:min="1" />
-
-                <NumberPicker
-                    android:id="@+id/day_picker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:max="31"
-                    android:min="1" />
-            </LinearLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_memo"
-                style="@style/Widget.Material3.TextInputLayout.FilledBox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:hint="@string/memo"
-                android:maxWidth="488dp"
-                app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
-                app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
-                app:layout_constraintTop_toBottomOf="@+id/layout_date">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edt_memo"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:maxWidth="488dp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:id="@+id/tv_category"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/category"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
-                app:layout_constraintTop_toBottomOf="@+id/layout_memo" />
-
-            <TextView
-                android:id="@+id/tv_require_select"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="@string/require_selection"
-                android:textColor="@color/carnation"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_category"
-                app:layout_constraintStart_toEndOf="@+id/tv_category"
-                app:layout_constraintTop_toTopOf="@+id/tv_category" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/cg_category"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
-                app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
-                app:layout_constraintTop_toBottomOf="@+id/tv_category"
-                app:singleSelection="true" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_del"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="@color/Endeavour"
-                android:text="삭제하기"
-                android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btn_edit"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
-                app:layout_constraintTop_toBottomOf="@+id/cg_category" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_edit"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="@color/Endeavour"
-                android:text="수정하기"
-                android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/btn_del"
-                app:layout_constraintTop_toBottomOf="@+id/cg_category" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
+        app:layout_constraintTop_toBottomOf="@+id/btn_del" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

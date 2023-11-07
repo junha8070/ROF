@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:strokeWidth="0dp"
-    android:backgroundTint="@color/white"
     android:orientation="horizontal">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            app:iconTint="@color/black"
+            app:iconTint="@color/main_orange"
             android:gravity="center"
             app:icon="@drawable/baseline_keyboard_arrow_down_24"
             app:iconGravity="textTop"
@@ -34,7 +33,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:backgroundTint="@color/Polo_Blue"
+            android:backgroundTint="@color/main_orange"
             android:text="Category"
             android:textColor="@color/white"
             app:cornerRadius="20dp"
@@ -54,7 +53,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:backgroundTint="@color/Resolution_Blue"
+            android:backgroundTint="@color/main_orange"
             android:text="ROF"
             android:textColor="@color/white"
             app:cornerRadius="20dp"

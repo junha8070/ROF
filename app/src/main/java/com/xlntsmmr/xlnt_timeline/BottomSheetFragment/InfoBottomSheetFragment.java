@@ -1,5 +1,7 @@
 package com.xlntsmmr.xlnt_timeline.BottomSheetFragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -49,15 +51,31 @@ public class InfoBottomSheetFragment extends BottomSheetDialogFragment {
         binding = FragmentInfoBottomSheetBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
 
+        if(forceUpdate&&!currentVersion.equals(latestVersion)){
+            binding.btnClose.setVisibility(View.INVISIBLE);
+        }
 
         binding.tvContent.setText(String.format("%s\n%s", jsonUpdateNews, jsonNewFunction));
         binding.tvNowVer.setText(currentVersion);
         binding.tvLatestVer.setText(latestVersion);
 
+        if(currentVersion.equals(latestVersion)||latestVersion.equals("버전 확인 중")){
+            binding.btnUpdate.setVisibility(View.GONE);
+        }
+
         binding.btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
+            }
+        });
+
+        binding.btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent marketLaunch = new Intent(Intent.ACTION_VIEW);
+                marketLaunch.setData(Uri.parse("market://details?id="+getActivity().getPackageName()));
+                startActivity(marketLaunch);
             }
         });
 

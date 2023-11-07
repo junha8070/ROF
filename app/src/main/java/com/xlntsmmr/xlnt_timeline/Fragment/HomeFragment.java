@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.xlntsmmr.xlnt_timeline.Adapter.TodayROFAdapter;
@@ -61,6 +63,8 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
 
     int prev_timeLineEntities_size = 0;
 
+    String currentVersion;
+
     enum Status {
         READY, ONGOING, FINISH
     }
@@ -83,12 +87,48 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
 
-        binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        PackageInfo pi = null;
+        try {
+            pi = requireActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        currentVersion = pi.versionName;
+
+        configViewModel.getIsRemoteConfigLoadFinish().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
-            public void onClick(View v) {
-                binding.drawerLayout.openDrawer(GravityCompat.START);
+            public void onChanged(Boolean isRemoteConfigLoadFinish) {
+                if(isRemoteConfigLoadFinish){
+                    if(!configViewModel.getLatestVersion().equals(currentVersion)){
+                        if(configViewModel.getForceUpdate()){
+                            boolean forceUpdate = configViewModel.getForceUpdate();
+                            String latestVersion = configViewModel.getLatestVersion();
+                            String minVersion = configViewModel.getMinVersion();
+                            String updateNewsJson = configViewModel.getUpdateNewsJson();
+                            String jsonLatestVersion = configViewModel.getJsonLatestVersion();
+                            String jsonUpdateNews = configViewModel.getJsonUpdateNews();
+                            String jsonNewFunction = configViewModel.getJsonNewFunction();
+
+                            InfoBottomSheetFragment infoBottomSheetFragment = new InfoBottomSheetFragment(
+                                    currentVersion, forceUpdate, latestVersion, minVersion, jsonLatestVersion, jsonUpdateNews, jsonNewFunction);
+
+                            infoBottomSheetFragment.setCancelable(false);
+
+                            Log.d(TAG, "forceUpdate : "+forceUpdate);
+                            Log.d(TAG, "latestVersion : "+latestVersion);
+                            Log.d(TAG, "minVersion : "+minVersion);
+                            Log.d(TAG, "jsonLatestVersion : "+jsonLatestVersion);
+                            Log.d(TAG, "jsonUpdateNews : "+jsonUpdateNews);
+                            Log.d(TAG, "jsonNewFunction : "+jsonNewFunction);
+
+                            infoBottomSheetFragment.show(getParentFragmentManager(), "InfoBottomSheetFragment");
+                        }
+                    }
+                }
             }
         });
+
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
         now = new Date();
         calendar = Calendar.getInstance();
@@ -142,36 +182,73 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
             setupTodayROFAdapter();
         }
 
+
         binding.btnInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                try {
-                    PackageInfo pi = requireActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
-                    String currentVersion = pi.versionName;
-                    boolean forceUpdate = configViewModel.getForceUpdate();
-                    String latestVersion = configViewModel.getLatestVersion();
-                    String minVersion = configViewModel.getMinVersion();
-                    String updateNewsJson = configViewModel.getUpdateNewsJson();
-                    String jsonLatestVersion = configViewModel.getJsonLatestVersion();
-                    String jsonUpdateNews = configViewModel.getJsonUpdateNews();
-                    String jsonNewFunction = configViewModel.getJsonNewFunction();
+                configViewModel.getIsRemoteConfigLoadFinish().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean isRemoteConfigLoadFinish) {
+                        if(isRemoteConfigLoadFinish){
+                            try {
+                                PackageInfo pi = requireActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+                                String currentVersion = pi.versionName;
+                                boolean forceUpdate = configViewModel.getForceUpdate();
+                                String latestVersion = configViewModel.getLatestVersion();
+                                String minVersion = configViewModel.getMinVersion();
+                                String updateNewsJson = configViewModel.getUpdateNewsJson();
+                                String jsonLatestVersion = configViewModel.getJsonLatestVersion();
+                                String jsonUpdateNews = configViewModel.getJsonUpdateNews();
+                                String jsonNewFunction = configViewModel.getJsonNewFunction();
 
-                    InfoBottomSheetFragment infoBottomSheetFragment = new InfoBottomSheetFragment(
-                            currentVersion, forceUpdate, latestVersion, minVersion, jsonLatestVersion, jsonUpdateNews, jsonNewFunction);
+                                InfoBottomSheetFragment infoBottomSheetFragment = new InfoBottomSheetFragment(
+                                        currentVersion, forceUpdate, latestVersion, minVersion, jsonLatestVersion, jsonUpdateNews, jsonNewFunction);
 
-                    Log.d(TAG, "forceUpdate : "+forceUpdate);
-                    Log.d(TAG, "latestVersion : "+latestVersion);
-                    Log.d(TAG, "minVersion : "+minVersion);
-                    Log.d(TAG, "jsonLatestVersion : "+jsonLatestVersion);
-                    Log.d(TAG, "jsonUpdateNews : "+jsonUpdateNews);
-                    Log.d(TAG, "jsonNewFunction : "+jsonNewFunction);
+                                Log.d(TAG, "forceUpdate : "+forceUpdate);
+                                Log.d(TAG, "latestVersion : "+latestVersion);
+                                Log.d(TAG, "minVersion : "+minVersion);
+                                Log.d(TAG, "jsonLatestVersion : "+jsonLatestVersion);
+                                Log.d(TAG, "jsonUpdateNews : "+jsonUpdateNews);
+                                Log.d(TAG, "jsonNewFunction : "+jsonNewFunction);
 
-                    infoBottomSheetFragment.show(getParentFragmentManager(), "InfoBottomSheetFragment");
-                } catch (PackageManager.NameNotFoundException e) {
-                    Toast.makeText(getContext(), "오류가 발생하였습니다.", Toast.LENGTH_SHORT).show();
-                    throw new RuntimeException(e);
-                }
+                                infoBottomSheetFragment.show(getParentFragmentManager(), "InfoBottomSheetFragment");
+                            } catch (PackageManager.NameNotFoundException e) {
+                                Toast.makeText(getContext(), "오류가 발생하였습니다.", Toast.LENGTH_SHORT).show();
+                                throw new RuntimeException(e);
+                            }
+                        }else{
+                            try {
+                                PackageInfo pi = requireActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+                                String currentVersion = pi.versionName;
+                                boolean forceUpdate = false;
+                                String latestVersion = "버전 확인 중";
+                                String minVersion = "버전 확인 중";
+                                String updateNewsJson = "버전 확인 중";
+                                String jsonLatestVersion = "버전 확인 중";
+                                String jsonUpdateNews = "버전 확인 중";
+                                String jsonNewFunction = "버전 확인 중";
+
+                                InfoBottomSheetFragment infoBottomSheetFragment = new InfoBottomSheetFragment(
+                                        currentVersion, forceUpdate, latestVersion, minVersion, jsonLatestVersion, jsonUpdateNews, jsonNewFunction);
+
+                                Log.d(TAG, "forceUpdate : "+forceUpdate);
+                                Log.d(TAG, "latestVersion : "+latestVersion);
+                                Log.d(TAG, "minVersion : "+minVersion);
+                                Log.d(TAG, "jsonLatestVersion : "+jsonLatestVersion);
+                                Log.d(TAG, "jsonUpdateNews : "+jsonUpdateNews);
+                                Log.d(TAG, "jsonNewFunction : "+jsonNewFunction);
+
+                                infoBottomSheetFragment.show(getParentFragmentManager(), "InfoBottomSheetFragment");
+                            } catch (PackageManager.NameNotFoundException e) {
+                                Toast.makeText(getContext(), "오류가 발생하였습니다.", Toast.LENGTH_SHORT).show();
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                });
+
+
 
 
 

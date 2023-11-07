@@ -1,14 +1,17 @@
 package com.xlntsmmr.xlnt_timeline.BottomSheetFragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.xlntsmmr.xlnt_timeline.ViewModel.CategoryViewModel;
@@ -35,6 +38,18 @@ public class ShowCategoryBottomFragment extends BottomSheetDialogFragment {
         // Inflate the layout for this fragment
         binding = FragmentShowCategoryBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
+
+        binding.editTextCategoryName.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(binding.editTextCategoryName.getWindowToken(), 0);    //hide keyboard
+                    return true;
+                }
+                return false;
+            }
+        });
 
         binding.editTextCategoryName.setText(title);
 

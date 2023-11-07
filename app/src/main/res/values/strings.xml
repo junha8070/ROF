@@ -1,14 +1,25 @@
 <resources>
-    <string name="app_name">Xlnt_TimeLine</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">ROF</string>
+
+    <string name="ready">Ready</string>
+    <string name="onGoing">on Going</string>
+    <string name="finish">Finish</string>
+
+    <!-- HomeFragment -->
+    <string name="home_title_1">지금까지\ </string>
+    <string name="home_title_2">개 ROF를</string>
+    <string name="home_title_3">기록했어요✍🏻</string>
+    <string name="add">추가하기</string>
+    <string name="view_by_calendar">달력으로 보기</string>
+    <string name="today_rof">Today\'s ROF</string>
+    <string name="nothing">Nothing!</string>
+    <string name="basic_zero">0</string>
 
     <string name="add_timeline">ROF 추가</string>
     <string name="view_timeline">ROF 보기</string>
     <string name="not_check_time">체크시 날짜의 특정 시간에 알림을 보내드릴게요.\n*현재 시간 이후로만 설정 가능해요.</string>
     <string name="importance_hint">중요도(글자 크기가 달라집니다.)</string>
     <string name="zero">0</string>
-    <string name="add">추가하기</string>
     <string name="category_eng">Category</string>
     <string name="category">카테고리</string>
     <string name="date">날짜</string>

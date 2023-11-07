@@ -2,6 +2,7 @@ package com.xlntsmmr.xlnt_timeline.BottomSheetFragment;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +18,22 @@ import java.util.Calendar;
 
 public class DatePickerBottomSheetFragment extends BottomSheetDialogFragment {
 
+    String TAG = "DatePickerBottomSheetFragment";
     private NumberPicker yearPicker, monthPicker, dayPicker;
 
+    int select_year = 0;
+    int select_month = 0;
+    int select_day = 0;
+
     public interface OnDateSelectedListener {
-        void onDateSelected(String category_name);
+        void onDateSelected(String formattedDate);
+    }
+
+    public DatePickerBottomSheetFragment(int select_year, int select_month, int select_day) {
+        this.select_year = select_year;
+        this.select_month = select_month;
+        this.select_day = select_day;
+        Log.d(TAG, ""+select_year+" "+select_month+" "+select_day);
     }
 
     private OnDateSelectedListener mListener;
@@ -33,24 +46,31 @@ public class DatePickerBottomSheetFragment extends BottomSheetDialogFragment {
         monthPicker = view.findViewById(R.id.month_picker);
         dayPicker = view.findViewById(R.id.day_picker);
 
-        // 현재 날짜를 얻어옵니다.
-        Calendar calendar = Calendar.getInstance();
-        int currentYear = calendar.get(Calendar.YEAR);
-        int currentMonth = calendar.get(Calendar.MONTH) + 1; // 월은 0부터 시작하므로 +1 해줍니다.
-        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
 
-        // NumberPicker에 현재 날짜를 설정합니다.
         yearPicker.setMaxValue(2100);
         yearPicker.setMinValue(1900);
-        yearPicker.setValue(currentYear);
 
         monthPicker.setMaxValue(12);
         monthPicker.setMinValue(1);
-        monthPicker.setValue(currentMonth);
 
         dayPicker.setMaxValue(31);
         dayPicker.setMinValue(1);
-        dayPicker.setValue(currentDay);
+
+        if(select_year!=0&&select_month!=0&&select_day!=0){
+            yearPicker.setValue(select_year);
+            monthPicker.setValue(select_month);
+            dayPicker.setValue(select_day);
+        }else{
+            Calendar calendar = Calendar.getInstance();
+            int currentYear = calendar.get(Calendar.YEAR);
+            int currentMonth = calendar.get(Calendar.MONTH) + 1; // 월은 0부터 시작하므로 +1 해줍니다.
+            int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+            // NumberPicker에 현재 날짜를 설정합니다.
+            yearPicker.setValue(currentYear);
+            monthPicker.setValue(currentMonth);
+            dayPicker.setValue(currentDay);
+        }
 
         return view;
     }

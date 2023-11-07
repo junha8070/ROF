@@ -3,12 +3,15 @@ package com.xlntsmmr.xlnt_timeline.ViewModel;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.xlntsmmr.xlnt_timeline.Repository.RemoteConfigRepository;
 
 public class ConfigViewModel extends ViewModel {
     private RemoteConfigRepository mRemoteConfigRepository;
+
+    private LiveData<Boolean> isRemoteConfigLoadFinish;
 
     public ConfigViewModel() {
         mRemoteConfigRepository = new RemoteConfigRepository();
@@ -44,5 +47,9 @@ public class ConfigViewModel extends ViewModel {
 
     public String getJsonNewFunction(){
         return mRemoteConfigRepository.getJsonNewFunction();
+    }
+
+    public LiveData<Boolean> getIsRemoteConfigLoadFinish() {
+        return mRemoteConfigRepository.getIsRemoteConfigLoadFinish();
     }
 }

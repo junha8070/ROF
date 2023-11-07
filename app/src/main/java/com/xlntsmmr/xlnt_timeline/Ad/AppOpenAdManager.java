@@ -181,7 +181,7 @@ public class AppOpenAdManager extends AppOpenAd.AppOpenAdLoadCallback implements
 //            return;
 //        }
 
-        if (!isAdAvailable()) { // 이 부분을 수정했습니다.
+        if (!isAdAvailable()) {
             AppOpenAd.load(application, adUnitId, adRequest, orientation, this);
         }
     }

@@ -1,5 +1,7 @@
 package com.xlntsmmr.xlnt_timeline.BottomSheetFragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
@@ -8,13 +10,21 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.CompoundButton;
+import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.chip.Chip;
 import com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity;
+import com.xlntsmmr.xlnt_timeline.Fragment.HomeFragment;
+import com.xlntsmmr.xlnt_timeline.R;
 import com.xlntsmmr.xlnt_timeline.databinding.FragmentAddROFBottomSheetBinding;
 import com.xlntsmmr.xlnt_timeline.Entity.TimeLineEntity;
 import com.xlntsmmr.xlnt_timeline.ViewModel.CategoryViewModel;
@@ -23,7 +33,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
-public class AddROFBottomSheetFragment extends BottomSheetDialogFragment {
+public class AddROFBottomSheetFragment extends BottomSheetDialogFragment implements DatePickerBottomSheetFragment.OnDateSelectedListener {
 
     String TAG = "AddROFBottomSheetFragment";
 
@@ -33,6 +43,11 @@ public class AddROFBottomSheetFragment extends BottomSheetDialogFragment {
     int select_year = 0;
     int select_month = 0;
     int select_day = 0;
+
+    @Override
+    public void onDateSelected(String formattedDate) {
+        binding.edtDate.setText(formattedDate);
+    }
 
     public interface OnROFDataListener {
         void onROFDataListener(TimeLineEntity timeLine);
@@ -63,30 +78,29 @@ public class AddROFBottomSheetFragment extends BottomSheetDialogFragment {
         binding = FragmentAddROFBottomSheetBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
 
-        binding.yearPicker.setMaxValue(2100);
-        binding.yearPicker.setMinValue(1900);
+//        setStyle(STYLE_NORMAL, R.style.RoundCornerBottomSheetDialogTheme);
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-        binding.monthPicker.setMaxValue(12);
-        binding.monthPicker.setMinValue(1);
+        binding.edtContents.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                binding.edtMemo.requestFocus();
+                return true;
+            }
+        });
 
-        binding.dayPicker.setMaxValue(31);
-        binding.dayPicker.setMinValue(1);
+        binding.edtMemo.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(binding.edtMemo.getWindowToken(), 0);    //hide keyboard
+                    return true;
+                }
+                return false;
+            }
+        });
 
-        if(select_year!=0&&select_month!=0&&select_day!=0){
-            binding.yearPicker.setValue(select_year);
-            binding.monthPicker.setValue(select_month);
-            binding.dayPicker.setValue(select_day);
-        }else{
-            Calendar calendar = Calendar.getInstance();
-            int currentYear = calendar.get(Calendar.YEAR);
-            int currentMonth = calendar.get(Calendar.MONTH) + 1; // 월은 0부터 시작하므로 +1 해줍니다.
-            int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-
-            // NumberPicker에 현재 날짜를 설정합니다.
-            binding.yearPicker.setValue(currentYear);
-            binding.monthPicker.setValue(currentMonth);
-            binding.dayPicker.setValue(currentDay);
-        }
 
         categoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), new Observer<List<CategoryEntity>>() {
             @Override
@@ -95,8 +109,33 @@ public class AddROFBottomSheetFragment extends BottomSheetDialogFragment {
                     Chip chip = new Chip(getContext());
                     chip.setText(categoryEntities.get(i).getTitle());
                     chip.setCheckable(true);
+                    chip.setChipStrokeWidth(3);
+                    chip.setChipBackgroundColorResource(R.color.white);
+                    chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            if(isChecked){
+                                chip.setChipBackgroundColorResource(R.color.main_orange);
+                                chip.setChipStrokeWidth(0);
+                                chip.setTextColor(getResources().getColor(R.color.white, getContext().getTheme()));
+                            }else{
+                                chip.setChipBackgroundColorResource(R.color.white);
+                                chip.setChipStrokeWidth(3);
+                                chip.setTextColor(getResources().getColor(R.color.black, getContext().getTheme()));
+                            }
+                        }
+                    });
                     binding.cgCategory.addView(chip);
                 }
+            }
+        });
+
+        binding.edtDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerBottomSheetFragment datePickerBottomSheetFragment = new DatePickerBottomSheetFragment(select_year, select_month,select_day);
+                datePickerBottomSheetFragment.setOnDateSelectedListener(AddROFBottomSheetFragment.this);
+                datePickerBottomSheetFragment.show(getParentFragmentManager(), "DatePickerBottomSheetFragment");
             }
         });
 
@@ -117,9 +156,9 @@ public class AddROFBottomSheetFragment extends BottomSheetDialogFragment {
                     return;
                 }
 
-                int year = binding.yearPicker.getValue();
-                int month = binding.monthPicker.getValue();
-                int day = binding.dayPicker.getValue();
+                int year = Integer.parseInt((String) binding.edtDate.getText().toString().substring(0,4));
+                int month =Integer.parseInt((String) binding.edtDate.getText().toString().substring(6,8));
+                int day = Integer.parseInt((String) binding.edtDate.getText().toString().substring(10,12));
 
                 String memo = binding.edtMemo.getText().toString();
 

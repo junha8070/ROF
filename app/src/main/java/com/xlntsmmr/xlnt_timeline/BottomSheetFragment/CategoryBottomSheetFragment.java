@@ -1,10 +1,13 @@
 package com.xlntsmmr.xlnt_timeline.BottomSheetFragment;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -37,6 +40,18 @@ public class CategoryBottomSheetFragment extends BottomSheetDialogFragment {
 //        btn_cancel = view.findViewById(R.id.btn_cancel);
         btn_add = view.findViewById(R.id.btn_add);
         btn_close = view.findViewById(R.id.btn_close);
+
+        editTextCategoryName.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(editTextCategoryName.getWindowToken(), 0);    //hide keyboard
+                    return true;
+                }
+                return false;
+            }
+        });
 
 //        btn_cancel.setOnClickListener(new View.OnClickListener() {
 //            @Override
