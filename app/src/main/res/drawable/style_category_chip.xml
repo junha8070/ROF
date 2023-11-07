@@ -1,6 +1,0 @@
-<!-- res/drawable/style_category_chip.xml -->
-
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/main_orange" android:state_checked="true" />
-    <item android:drawable="@android:color/white" />
-</selector>

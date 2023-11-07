@@ -13,7 +13,7 @@
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:gravity="center"
-        app:icon="@drawable/baseline_keyboard_arrow_down_24"
+        app:icon="@drawable/baseline_arrow_down"
         app:iconGravity="textTop"
         app:iconTint="@color/main_orange"
         app:layout_constraintEnd_toEndOf="parent"

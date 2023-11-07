@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="0dp"
-        app:icon="@drawable/round_square"
+        app:icon="@drawable/ic_round_square_status"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,7 +34,7 @@
         style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:icon="@drawable/baseline_more_horiz_24"
+        app:icon="@drawable/baseline_more_horiz"
         app:iconTint="@color/Resolution_Blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

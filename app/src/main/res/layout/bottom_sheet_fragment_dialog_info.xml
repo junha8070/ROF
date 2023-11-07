@@ -16,7 +16,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:padding="0dp"
-        app:icon="@drawable/baseline_keyboard_arrow_down_24"
+        app:icon="@drawable/baseline_arrow_down"
         app:iconGravity="textTop"
         app:iconPadding="0dp"
         app:iconTint="@color/main_orange"

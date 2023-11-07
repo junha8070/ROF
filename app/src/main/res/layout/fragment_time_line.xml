@@ -18,7 +18,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:navigationIcon="@drawable/baseline_home_24"
+            app:navigationIcon="@drawable/ic_home"
             app:navigationIconTint="@color/main_orange"
             app:titleTextAppearance="@style/Toolbar.TitleText">
 
@@ -276,7 +276,7 @@
                 android:layout_height="wrap_content"
                 app:iconTint="@color/main_orange"
                 style="@style/Widget.Material3.Button.IconButton"
-                app:icon="@drawable/baseline_navigate_before_24"
+                app:icon="@drawable/baseline_navigate_before"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/gl_btn_middle"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -293,7 +293,7 @@
                 android:layout_width="wrap_content"
                 app:iconTint="@color/main_orange"
                 style="@style/Widget.Material3.Button.IconButton"
-                app:icon="@drawable/baseline_navigate_next_24"
+                app:icon="@drawable/baseline_navigate_next"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/gl_btn_middle"
@@ -318,7 +318,7 @@
                 android:layout_height="wrap_content"
                 android:checkable="true"
                 android:text="Ready"
-                app:chipIcon="@drawable/round_square"
+                app:chipIcon="@drawable/ic_round_square_status"
                 app:chipIconTint="@color/ready_gray"
                 app:chipStrokeWidth="0dp" />
 
@@ -328,7 +328,7 @@
                 android:layout_height="wrap_content"
                 android:checkable="true"
                 android:text="On Going"
-                app:chipIcon="@drawable/round_square"
+                app:chipIcon="@drawable/ic_round_square_status"
                 app:chipIconTint="@color/onGoing_green"
                 app:chipStrokeWidth="0dp" />
 
@@ -338,7 +338,7 @@
                 android:layout_height="wrap_content"
                 android:checkable="true"
                 android:text="Finish"
-                app:chipIcon="@drawable/round_square"
+                app:chipIcon="@drawable/ic_round_square_status"
                 app:chipIconTint="@color/finish_blue"
                 app:chipStrokeWidth="0dp" />
 
@@ -360,7 +360,7 @@
             android:text="@string/add"
             android:textColor="@color/white"
             app:backgroundTint="@color/main_orange"
-            app:icon="@drawable/baseline_add_white_24"
+            app:icon="@drawable/baseline_add"
             app:iconTint="@color/white"
             app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
             app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"

@@ -23,7 +23,7 @@
             android:layout_gravity="center"
             app:iconTint="@color/black"
             android:gravity="center"
-            app:icon="@drawable/baseline_keyboard_arrow_down_24"
+            app:icon="@drawable/baseline_arrow_down"
             app:iconGravity="textTop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
