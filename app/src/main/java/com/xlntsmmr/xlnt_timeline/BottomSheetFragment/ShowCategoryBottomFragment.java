@@ -15,11 +15,11 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.xlntsmmr.xlnt_timeline.ViewModel.CategoryViewModel;
-import com.xlntsmmr.xlnt_timeline.databinding.FragmentShowCategoryBinding;
+import com.xlntsmmr.xlnt_timeline.databinding.BottomSheetFragmentDialogEditCategoryBinding;
 
 public class ShowCategoryBottomFragment extends BottomSheetDialogFragment {
 
-    private FragmentShowCategoryBinding binding;
+    private BottomSheetFragmentDialogEditCategoryBinding binding;
     String category_UUID, title;
 
     public ShowCategoryBottomFragment(String category_UUID, String title) {
@@ -36,7 +36,7 @@ public class ShowCategoryBottomFragment extends BottomSheetDialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentShowCategoryBinding.inflate(inflater, container, false);
+        binding = BottomSheetFragmentDialogEditCategoryBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
 
         binding.editTextCategoryName.setOnKeyListener(new View.OnKeyListener() {

@@ -33,7 +33,6 @@ import com.xlntsmmr.xlnt_timeline.DTO.TimeLineDTO;
 import com.xlntsmmr.xlnt_timeline.Entity.TimeLineEntity;
 import com.xlntsmmr.xlnt_timeline.databinding.FragmentTimeLineBinding;
 import com.xlntsmmr.xlnt_timeline.ViewModel.CategoryViewModel;
-import com.xlntsmmr.xlnt_timeline.ViewModel.SettingViewModel;
 import com.xlntsmmr.xlnt_timeline.ViewModel.TimeLineViewModel;
 
 import java.util.ArrayList;
@@ -51,7 +50,6 @@ public class TimeLineFragment extends Fragment implements AddBottomSheetFragment
     // ViewModel
     private CategoryViewModel categoryViewModel;
     private TimeLineViewModel timeLineViewModel;
-    private SettingViewModel settingViewModel;
 
 
     //
@@ -78,33 +76,7 @@ public class TimeLineFragment extends Fragment implements AddBottomSheetFragment
         super.onCreate(savedInstanceState);
         categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
         timeLineViewModel = new ViewModelProvider(this).get(TimeLineViewModel.class);
-        settingViewModel = new ViewModelProvider(this).get(SettingViewModel.class);
     }
-
-//    @Override
-//    public void onStatusButtonClick(String uuid, int position) {
-//        // Use the uuid and position here in TimeLineFragment
-////        Log.d(TAG, "uuid: " + uuid);
-////        Log.d(TAG, "position: " + position);
-//
-//        // Do whatever you need to do with uuid and position here
-//    }
-
-//    @Override
-//    public void onSaveInstanceState(@NonNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//
-//        outState.putInt("old_position", old_position);
-//        outState.putInt("today_year", today_year);
-//        outState.putInt("today_month", today_month);
-//        outState.putInt("today_day", today_day);
-//
-//        // ArrayList들을 저장합니다.
-//        outState.putSerializable("arr_category", arr_category);
-//        outState.putSerializable("arr_content", arr_content);
-//        outState.putSerializable("arr_timelineEntity", arr_timelineEntity);
-//        outState.putSerializable("arr_ROF", arr_ROF);
-//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -121,19 +93,6 @@ public class TimeLineFragment extends Fragment implements AddBottomSheetFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-//        if (savedInstanceState != null) {
-//            old_position = savedInstanceState.getInt("old_position");
-//            today_year = savedInstanceState.getInt("today_year");
-//            today_month = savedInstanceState.getInt("today_month");
-//            today_day = savedInstanceState.getInt("today_day");
-//
-//            // ArrayList들을 복원합니다.
-//            arr_category = (ArrayList<CategoryEntity>) savedInstanceState.getSerializable("arr_category");
-//            arr_content = (ArrayList<TimeLineDTO>) savedInstanceState.getSerializable("arr_content");
-//            arr_timelineEntity = (ArrayList<TimeLineEntity>) savedInstanceState.getSerializable("arr_timelineEntity");
-//            arr_ROF = (HashMap<CategoryEntity, ArrayList<TimeLineDTO>>) savedInstanceState.getSerializable("arr_ROF");
-//        }
 
         arr_category = new ArrayList<>();
         arr_content = new ArrayList<>();
@@ -462,34 +421,4 @@ public class TimeLineFragment extends Fragment implements AddBottomSheetFragment
                 break;
         }
     }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG, "onPause");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-//        Log.d(TAG, "onDestroyView");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy");
-    }
-
-
-//    @Override
-//    public void onStatusButtonClick(int position) {
-////        Toast.makeText(getContext(), "position"+position, Toast.LENGTH_SHORT).show();
-//    }
 }

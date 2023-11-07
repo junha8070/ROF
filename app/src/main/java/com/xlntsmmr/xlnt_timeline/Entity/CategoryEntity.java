@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 
 import java.util.UUID;
 
-@Entity(tableName = "categories")
+@Entity(tableName = "category")
 public class CategoryEntity {
 
     @PrimaryKey

@@ -25,9 +25,9 @@ import com.google.android.material.chip.Chip;
 import com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity;
 import com.xlntsmmr.xlnt_timeline.Fragment.HomeFragment;
 import com.xlntsmmr.xlnt_timeline.R;
-import com.xlntsmmr.xlnt_timeline.databinding.FragmentAddROFBottomSheetBinding;
 import com.xlntsmmr.xlnt_timeline.Entity.TimeLineEntity;
 import com.xlntsmmr.xlnt_timeline.ViewModel.CategoryViewModel;
+import com.xlntsmmr.xlnt_timeline.databinding.BottomSheetFragmentDialogAddRofBinding;
 
 import java.util.Calendar;
 import java.util.List;
@@ -37,7 +37,7 @@ public class AddROFBottomSheetFragment extends BottomSheetDialogFragment impleme
 
     String TAG = "AddROFBottomSheetFragment";
 
-    private FragmentAddROFBottomSheetBinding binding;
+    private BottomSheetFragmentDialogAddRofBinding binding;
     private CategoryViewModel categoryViewModel;
 
     int select_year = 0;
@@ -75,7 +75,7 @@ public class AddROFBottomSheetFragment extends BottomSheetDialogFragment impleme
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentAddROFBottomSheetBinding.inflate(inflater, container, false);
+        binding = BottomSheetFragmentDialogAddRofBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
 
 //        setStyle(STYLE_NORMAL, R.style.RoundCornerBottomSheetDialogTheme);

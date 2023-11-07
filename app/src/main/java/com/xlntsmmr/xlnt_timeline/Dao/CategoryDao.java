@@ -15,12 +15,12 @@ public interface CategoryDao {
     @Insert
     void insertCategory(CategoryEntity category);
 
-    @Query("SELECT * FROM categories")
+    @Query("SELECT * FROM category")
     LiveData<List<CategoryEntity>> getAllCategories();
 
-    @Query("DELETE FROM categories WHERE uuid = :categoryUUID")
+    @Query("DELETE FROM category WHERE uuid = :categoryUUID")
     void deleteCategory(String categoryUUID);
 
-    @Query("UPDATE categories SET title = :newTitle WHERE uuid = :categoryUUID")
+    @Query("UPDATE category SET title = :newTitle WHERE uuid = :categoryUUID")
     void editCategory(String categoryUUID, String newTitle);
 }

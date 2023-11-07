@@ -11,19 +11,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.xlntsmmr.xlnt_timeline.R;
-import com.xlntsmmr.xlnt_timeline.databinding.FragmentAddBottomSheetBinding;
-import com.xlntsmmr.xlnt_timeline.databinding.FragmentInfoBottomSheetBinding;
+import com.xlntsmmr.xlnt_timeline.databinding.BottomSheetFragmentDialogInfoBinding;
 
 public class InfoBottomSheetFragment extends BottomSheetDialogFragment {
 
-    FragmentInfoBottomSheetBinding binding;
+    BottomSheetFragmentDialogInfoBinding binding;
 
     String currentVersion;
     boolean forceUpdate;
     String latestVersion;
     String minVersion;
-//    String updateNewsJson;
+    //    String updateNewsJson;
     String jsonLatestVersion;
     String jsonUpdateNews;
     String jsonNewFunction;
@@ -45,13 +43,11 @@ public class InfoBottomSheetFragment extends BottomSheetDialogFragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        binding = FragmentInfoBottomSheetBinding.inflate(inflater, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = BottomSheetFragmentDialogInfoBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
 
-        if(forceUpdate&&!currentVersion.equals(latestVersion)){
+        if (forceUpdate && !currentVersion.equals(latestVersion)) {
             binding.btnClose.setVisibility(View.INVISIBLE);
         }
 
@@ -59,7 +55,7 @@ public class InfoBottomSheetFragment extends BottomSheetDialogFragment {
         binding.tvNowVer.setText(currentVersion);
         binding.tvLatestVer.setText(latestVersion);
 
-        if(currentVersion.equals(latestVersion)||latestVersion.equals("버전 확인 중")){
+        if (currentVersion.equals(latestVersion) || latestVersion.equals("버전 확인 중")) {
             binding.btnUpdate.setVisibility(View.GONE);
         }
 
@@ -74,7 +70,7 @@ public class InfoBottomSheetFragment extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 Intent marketLaunch = new Intent(Intent.ACTION_VIEW);
-                marketLaunch.setData(Uri.parse("market://details?id="+getActivity().getPackageName()));
+                marketLaunch.setData(Uri.parse("market://details?id=" + getActivity().getPackageName()));
                 startActivity(marketLaunch);
             }
         });

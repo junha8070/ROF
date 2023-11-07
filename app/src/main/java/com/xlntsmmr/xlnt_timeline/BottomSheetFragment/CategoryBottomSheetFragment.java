@@ -16,13 +16,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.xlntsmmr.xlnt_timeline.R;
 import com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity;
+import com.xlntsmmr.xlnt_timeline.databinding.BottomSheetFragmentDialogAddCategoryBinding;
+import com.xlntsmmr.xlnt_timeline.databinding.BottomSheetFragmentDialogAddRofBinding;
 
 import java.util.UUID;
 
 public class CategoryBottomSheetFragment extends BottomSheetDialogFragment {
 
-    private EditText editTextCategoryName;
-    private MaterialButton btn_close, btn_cancel, btn_add;
+    private BottomSheetFragmentDialogAddCategoryBinding binding;
 
     String category_name;
 
@@ -34,45 +35,32 @@ public class CategoryBottomSheetFragment extends BottomSheetDialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.category_bottom_sheet, container, false);
+        binding = BottomSheetFragmentDialogAddCategoryBinding.inflate(inflater, container, false);
+        View rootView = binding.getRoot();
 
-        editTextCategoryName = view.findViewById(R.id.editTextCategoryName);
-//        btn_cancel = view.findViewById(R.id.btn_cancel);
-        btn_add = view.findViewById(R.id.btn_add);
-        btn_close = view.findViewById(R.id.btn_close);
-
-        editTextCategoryName.setOnKeyListener(new View.OnKeyListener() {
+        binding.editTextCategoryName.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(editTextCategoryName.getWindowToken(), 0);    //hide keyboard
+                    imm.hideSoftInputFromWindow(binding.editTextCategoryName.getWindowToken(), 0);    //hide keyboard
                     return true;
                 }
                 return false;
             }
         });
 
-//        btn_cancel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                editTextCategoryName.setText("");
-//                category_name = "";
-//                dismiss();
-//            }
-//        });
-
-        btn_close.setOnClickListener(new View.OnClickListener() {
+        binding.btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
             }
         });
 
-        btn_add.setOnClickListener(new View.OnClickListener() {
+        binding.btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                category_name = editTextCategoryName.getText().toString();
+                category_name = binding.editTextCategoryName.getText().toString();
 
                 if(!category_name.isEmpty()){
                     if (mListener != null) {
@@ -85,7 +73,7 @@ public class CategoryBottomSheetFragment extends BottomSheetDialogFragment {
             }
         });
 
-        return view;
+        return rootView;
     }
 
 

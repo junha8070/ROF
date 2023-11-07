@@ -15,14 +15,14 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity;
-import com.xlntsmmr.xlnt_timeline.databinding.FragmentAddBottomSheetBinding;
 import com.xlntsmmr.xlnt_timeline.ViewModel.CategoryViewModel;
+import com.xlntsmmr.xlnt_timeline.databinding.BottomSheetFragmentDialogAddBinding;
 
 import java.util.List;
 
 public class AddBottomSheetFragment extends BottomSheetDialogFragment {
 
-    private FragmentAddBottomSheetBinding binding;
+    private BottomSheetFragmentDialogAddBinding binding;
     private CategoryViewModel categoryViewModel;
 
     public interface OnAddListener {
@@ -43,7 +43,7 @@ public class AddBottomSheetFragment extends BottomSheetDialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentAddBottomSheetBinding.inflate(inflater, container, false);
+        binding = BottomSheetFragmentDialogAddBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
 
         categoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), new Observer<List<CategoryEntity>>() {

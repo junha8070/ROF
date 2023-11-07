@@ -21,17 +21,18 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.chip.Chip;
 import com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity;
 import com.xlntsmmr.xlnt_timeline.R;
-import com.xlntsmmr.xlnt_timeline.databinding.FragmentShowContentsBottomBinding;
 import com.xlntsmmr.xlnt_timeline.Entity.TimeLineEntity;
 import com.xlntsmmr.xlnt_timeline.ViewModel.CategoryViewModel;
 import com.xlntsmmr.xlnt_timeline.ViewModel.TimeLineViewModel;
+import com.xlntsmmr.xlnt_timeline.databinding.BottomSheetFragmentDialogEditCategoryBinding;
+import com.xlntsmmr.xlnt_timeline.databinding.BottomSheetFragmentDialogEditRofBinding;
 
 import java.util.Calendar;
 import java.util.List;
 
 public class ShowContentsBottomFragment extends BottomSheetDialogFragment implements DatePickerBottomSheetFragment.OnDateSelectedListener {
 
-    private FragmentShowContentsBottomBinding binding;
+    private BottomSheetFragmentDialogEditRofBinding binding;
     private CategoryViewModel categoryViewModel;
     private TimeLineViewModel timeLineViewModel;
 
@@ -58,7 +59,7 @@ public class ShowContentsBottomFragment extends BottomSheetDialogFragment implem
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentShowContentsBottomBinding.inflate(inflater, container, false);
+        binding = BottomSheetFragmentDialogEditRofBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
 
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);

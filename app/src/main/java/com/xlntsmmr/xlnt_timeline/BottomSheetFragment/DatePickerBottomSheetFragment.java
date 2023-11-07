@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.xlntsmmr.xlnt_timeline.R;
+import com.xlntsmmr.xlnt_timeline.databinding.BottomSheetFragmentDialogAddCategoryBinding;
+import com.xlntsmmr.xlnt_timeline.databinding.BottomSheetFragmentDialogSetCalendarBinding;
 
 
 import android.widget.NumberPicker;
@@ -19,7 +21,8 @@ import java.util.Calendar;
 public class DatePickerBottomSheetFragment extends BottomSheetDialogFragment {
 
     String TAG = "DatePickerBottomSheetFragment";
-    private NumberPicker yearPicker, monthPicker, dayPicker;
+
+    private BottomSheetFragmentDialogSetCalendarBinding binding;
 
     int select_year = 0;
     int select_month = 0;
@@ -40,26 +43,22 @@ public class DatePickerBottomSheetFragment extends BottomSheetDialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.calendar_bottom_sheet, container, false);
+        binding = BottomSheetFragmentDialogSetCalendarBinding.inflate(inflater, container, false);
+        View rootView = binding.getRoot();
 
-        yearPicker = view.findViewById(R.id.year_picker);
-        monthPicker = view.findViewById(R.id.month_picker);
-        dayPicker = view.findViewById(R.id.day_picker);
+        binding.yearPicker.setMaxValue(2100);
+        binding.yearPicker.setMinValue(1900);
 
+        binding.monthPicker.setMaxValue(12);
+        binding.monthPicker.setMinValue(1);
 
-        yearPicker.setMaxValue(2100);
-        yearPicker.setMinValue(1900);
-
-        monthPicker.setMaxValue(12);
-        monthPicker.setMinValue(1);
-
-        dayPicker.setMaxValue(31);
-        dayPicker.setMinValue(1);
+        binding.dayPicker.setMaxValue(31);
+        binding.dayPicker.setMinValue(1);
 
         if(select_year!=0&&select_month!=0&&select_day!=0){
-            yearPicker.setValue(select_year);
-            monthPicker.setValue(select_month);
-            dayPicker.setValue(select_day);
+            binding.yearPicker.setValue(select_year);
+            binding.monthPicker.setValue(select_month);
+            binding.dayPicker.setValue(select_day);
         }else{
             Calendar calendar = Calendar.getInstance();
             int currentYear = calendar.get(Calendar.YEAR);
@@ -67,12 +66,12 @@ public class DatePickerBottomSheetFragment extends BottomSheetDialogFragment {
             int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
 
             // NumberPicker에 현재 날짜를 설정합니다.
-            yearPicker.setValue(currentYear);
-            monthPicker.setValue(currentMonth);
-            dayPicker.setValue(currentDay);
+            binding.yearPicker.setValue(currentYear);
+            binding.monthPicker.setValue(currentMonth);
+            binding.dayPicker.setValue(currentDay);
         }
 
-        return view;
+        return rootView;
     }
 
 
@@ -80,9 +79,9 @@ public class DatePickerBottomSheetFragment extends BottomSheetDialogFragment {
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
 
-        int year = yearPicker.getValue();
-        int month = monthPicker.getValue();
-        int day = dayPicker.getValue();
+        int year = binding.yearPicker.getValue();
+        int month = binding.monthPicker.getValue();
+        int day = binding.dayPicker.getValue();
 
         String formattedDate = String.format("%04d년 %02d월 %02d일", year, month, day);
 
