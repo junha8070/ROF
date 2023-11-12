@@ -7,11 +7,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,15 +32,19 @@ import com.xlntsmmr.xlnt_timeline.R;
 import com.xlntsmmr.xlnt_timeline.DTO.TimeDTO;
 import com.xlntsmmr.xlnt_timeline.DTO.TimeLineDTO;
 import com.xlntsmmr.xlnt_timeline.Entity.TimeLineEntity;
-import com.xlntsmmr.xlnt_timeline.databinding.FragmentTimeLineBinding;
 import com.xlntsmmr.xlnt_timeline.ViewModel.CategoryViewModel;
 import com.xlntsmmr.xlnt_timeline.ViewModel.TimeLineViewModel;
+import com.xlntsmmr.xlnt_timeline.databinding.FragmentTimeLineBinding;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TimeLineFragment extends Fragment implements AddBottomSheetFragment.OnAddListener, CategoryBottomSheetFragment.OnCategoryNameSetListener, AddROFBottomSheetFragment.OnROFDataListener {
 
@@ -233,6 +238,17 @@ public class TimeLineFragment extends Fragment implements AddBottomSheetFragment
                 addBottomSheetFragment.show(getParentFragmentManager(), "AddBottomSheetFragment");
             }
         });
+
+        binding.btnListMove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("category_list", arr_category);
+
+                // Navigation을 통해 ListMoveFragment로 이동합니다.
+                Navigation.findNavController(requireView()).navigate(R.id.action_timeLineFragment_to_listMoveDialogFragment, bundle);
+            }
+        });
     }
 
     private int findNotNullDayPosition(ArrayList<CalendarDayDTO> calendarDayDTOS){
@@ -315,8 +331,9 @@ public class TimeLineFragment extends Fragment implements AddBottomSheetFragment
                                     }
                                 }
                             }
-
-                            arr_ROF.put(categoryEntity, timelinesForCategory);
+                            if(timelinesForCategory.size() > 0){
+                                arr_ROF.put(categoryEntity, timelinesForCategory);
+                            }
                         }
 
                         setAdapter(arr_ROF);
@@ -329,7 +346,24 @@ public class TimeLineFragment extends Fragment implements AddBottomSheetFragment
 
     private void setAdapter(HashMap<CategoryEntity, ArrayList<TimeLineDTO>> arr_ROF) {
         if (arr_category.size() > 0) {
-            timeLineAdapter = new TimeLineAdapter(arr_ROF);
+            // Convert the HashMap to a List for sorting
+            List<Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>>> list = new ArrayList<>(arr_ROF.entrySet());
+
+            // Sort the list based on CategoryEntity's position
+            Collections.sort(list, new Comparator<Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>>>() {
+                @Override
+                public int compare(Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>> o1, Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>> o2) {
+                    return Integer.compare(o1.getKey().getPosition(), o2.getKey().getPosition());
+                }
+            });
+
+            // Create a new sorted HashMap
+            LinkedHashMap<CategoryEntity, ArrayList<TimeLineDTO>> sortedMap = new LinkedHashMap<>();
+            for (Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>> entry : list) {
+                sortedMap.put(entry.getKey(), entry.getValue());
+            }
+
+            timeLineAdapter = new TimeLineAdapter(sortedMap);
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             binding.rvTodo.setLayoutManager(layoutManager);
 //            timeLineAdapter.contentAdapter = new ContentAdapter(new ArrayList<>());

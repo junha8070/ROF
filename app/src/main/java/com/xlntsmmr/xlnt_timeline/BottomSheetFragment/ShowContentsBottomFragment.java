@@ -3,11 +3,13 @@ package com.xlntsmmr.xlnt_timeline.BottomSheetFragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,10 +29,15 @@ import com.xlntsmmr.xlnt_timeline.ViewModel.TimeLineViewModel;
 import com.xlntsmmr.xlnt_timeline.databinding.BottomSheetFragmentDialogEditCategoryBinding;
 import com.xlntsmmr.xlnt_timeline.databinding.BottomSheetFragmentDialogEditRofBinding;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ShowContentsBottomFragment extends BottomSheetDialogFragment implements DatePickerBottomSheetFragment.OnDateSelectedListener {
+
+    String TAG = "ShowContentsBottomFragment";
 
     private BottomSheetFragmentDialogEditRofBinding binding;
     private CategoryViewModel categoryViewModel;
@@ -43,6 +50,9 @@ public class ShowContentsBottomFragment extends BottomSheetDialogFragment implem
     int select_year = 0;
     int select_month = 0;
     int select_day = 0;
+
+    int currentNightMode;
+    boolean isNightMode;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +71,9 @@ public class ShowContentsBottomFragment extends BottomSheetDialogFragment implem
         // Inflate the layout for this fragment
         binding = BottomSheetFragmentDialogEditRofBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
+
+        currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        isNightMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES;
 
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
@@ -84,6 +97,13 @@ public class ShowContentsBottomFragment extends BottomSheetDialogFragment implem
             }
         });
 
+        binding.btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+
         timeLineViewModel.getTimeLineByUUID(UUID).observe(getViewLifecycleOwner(), new Observer<TimeLineEntity>() {
             @Override
             public void onChanged(TimeLineEntity timeLine) {
@@ -92,30 +112,55 @@ public class ShowContentsBottomFragment extends BottomSheetDialogFragment implem
                         @Override
                         public void onChanged(List<CategoryEntity> categoryEntities) {
 
+                            ArrayList<CategoryEntity> arr_category = new ArrayList<>();
+                            arr_category.addAll(categoryEntities);
 
-                            for(int i =0;i<categoryEntities.size();i++){
+                            Collections.sort(arr_category, new Comparator<CategoryEntity>() {
+                                @Override
+                                public int compare(CategoryEntity category1, CategoryEntity category2) {
+                                    return Integer.compare(category1.getPosition(), category2.getPosition());
+                                }
+                            });
+
+
+                            for (int i = 0; i < arr_category.size(); i++) {
                                 Chip chip = new Chip(getContext());
-                                chip.setText(categoryEntities.get(i).getTitle());
+                                chip.setText(arr_category.get(i).getTitle());
                                 chip.setCheckable(true);
                                 chip.setChipStrokeWidth(3);
-                                chip.setChipBackgroundColorResource(R.color.white);
+                                if (isNightMode) {
+                                    chip.setChipBackgroundColorResource(R.color.bottomSheetBackground_dark);
+                                } else {
+                                    chip.setChipBackgroundColorResource(R.color.white);
+                                }
                                 chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                     @Override
                                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                        if(isChecked){
+
+                                        if (isChecked) {
                                             chip.setChipBackgroundColorResource(R.color.main_orange);
                                             chip.setChipStrokeWidth(0);
                                             chip.setTextColor(getResources().getColor(R.color.white, getContext().getTheme()));
-                                        }else{
-                                            chip.setChipBackgroundColorResource(R.color.white);
-                                            chip.setChipStrokeWidth(3);
-                                            chip.setTextColor(getResources().getColor(R.color.black, getContext().getTheme()));
+                                        } else {
+                                            if (isNightMode) {
+                                                chip.setChipBackgroundColorResource(R.color.bottomSheetBackground_dark);
+                                                chip.setChipStrokeWidth(3);
+                                                chip.setTextColor(getResources().getColor(R.color.white, getContext().getTheme()));
+                                            } else {
+                                                chip.setChipBackgroundColorResource(R.color.white);
+                                                chip.setChipStrokeWidth(3);
+                                                chip.setTextColor(getResources().getColor(R.color.black, getContext().getTheme()));
+                                            }
                                         }
                                     }
                                 });
                                 binding.cgCategory.addView(chip);
-                                if(categoryEntities.get(i).getTitle().equals(timeLine.getCategory())){
+                                Log.d(TAG, "chip id: " + chip.getId());
+                                Log.d(TAG, "chip title: " + categoryEntities.get(i).getTitle());
+                                Log.d(TAG, "chip timeline category: " + timeLine.getCategory());
+                                if (arr_category.get(i).getTitle().equals(timeLine.getCategory())) {
                                     check_category_id = chip.getId();
+                                    Log.d(TAG, "chip id: " + chip.getId());
                                 }
 
                             }
@@ -175,18 +220,18 @@ public class ShowContentsBottomFragment extends BottomSheetDialogFragment implem
             public void onClick(View v) {
                 String contents = binding.edtContents.getText().toString();
 
-                if(contents.isEmpty()){
+                if (contents.isEmpty()||contents.trim().isEmpty()) {
                     binding.edtContents.setError("내용을 입력해주세요.");
                     return;
                 }
 
-                int year = Integer.parseInt((String) binding.edtDate.getText().toString().substring(0,4));
-                int month =Integer.parseInt((String) binding.edtDate.getText().toString().substring(6,8));
-                int day = Integer.parseInt((String) binding.edtDate.getText().toString().substring(10,12));
+                int year = Integer.parseInt((String) binding.edtDate.getText().toString().substring(0, 4));
+                int month = Integer.parseInt((String) binding.edtDate.getText().toString().substring(6, 8));
+                int day = Integer.parseInt((String) binding.edtDate.getText().toString().substring(10, 12));
 
                 String memo = binding.edtMemo.getText().toString();
 
-                if(binding.cgCategory.getCheckedChipIds().size()<1){
+                if (binding.cgCategory.getCheckedChipIds().size() < 1) {
                     binding.tvRequireSelect.setVisibility(View.VISIBLE);
                     return;
                 }

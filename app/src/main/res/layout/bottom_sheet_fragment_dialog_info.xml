@@ -12,7 +12,7 @@
         android:id="@+id/btn_close"
         style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:gravity="center"
         android:padding="0dp"
@@ -31,7 +31,7 @@
         android:autoSizeTextType="uniform"
         android:gravity="center"
         android:lines="1"
-        android:text="@string/DevNews"
+        android:text="@string/dev_news"
         android:textSize="20sp"
         app:layout_constraintDimensionRatio="H,1:10"
         app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
@@ -45,7 +45,7 @@
         android:layout_marginTop="20dp"
         android:autoSizeTextType="uniform"
         android:gravity="center"
-        android:text="@string/NothingAlarm"
+        android:text="@string/nothingAlarm"
         android:textSize="15sp"
         app:layout_constraintDimensionRatio="H,1:10"
         app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:autoSizeTextType="uniform"
             android:gravity="end"
-            android:text="현재 버전 : "
+            android:text="@string/cur_ver"
             android:textSize="15sp" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:autoSizeTextType="uniform"
             android:gravity="start"
-            android:text="0.0.0"
+            android:text="@string/basic_zero"
             android:textSize="15sp" />
 
     </LinearLayout>
@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:autoSizeTextType="uniform"
             android:gravity="end"
-            android:text="최신 버전 : "
+            android:text="@string/latest_ver"
             android:textSize="15sp" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -106,7 +106,7 @@
             android:layout_height="wrap_content"
             android:autoSizeTextType="uniform"
             android:gravity="start"
-            android:text="0.0.0"
+            android:text="@string/basic_zero"
             android:textSize="15sp" />
 
 
@@ -133,7 +133,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="20dp"
         android:backgroundTint="@color/main_orange"
-        android:text="@string/gotoupdate"
+        android:text="@string/goto_update"
         android:textColor="@color/white"
         app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
         app:layout_constraintHorizontal_bias="0.5"

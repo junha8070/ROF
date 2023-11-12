@@ -42,6 +42,46 @@ public class TimeLineRepository {
         }
     }
 
+    public void updateCategoryByCategoryUUID(String categoryUUID, String newCategory) {
+        new UpdateCategoryByCategoryUUIDAsyncTask(timeLineDao).execute(categoryUUID, newCategory);
+    }
+
+    private static class UpdateCategoryByCategoryUUIDAsyncTask extends AsyncTask<String, Void, Void> {
+        private TimeLineDao timeLineDao;
+
+        UpdateCategoryByCategoryUUIDAsyncTask(TimeLineDao timeLineDao) {
+            this.timeLineDao = timeLineDao;
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            String categoryUUID = params[0];
+            String newCategory = params[1];
+            timeLineDao.updateCategoryByCategoryUUID(categoryUUID, newCategory);
+            return null;
+        }
+    }
+
+    public void deleteTimelinesByCategoryUUID(String categoryUUID) {
+        new DeleteTimelinesByCategoryUUIDAsyncTask(timeLineDao).execute(categoryUUID);
+    }
+
+    private static class DeleteTimelinesByCategoryUUIDAsyncTask extends AsyncTask<String, Void, Void> {
+        private TimeLineDao timeLineDao;
+
+        DeleteTimelinesByCategoryUUIDAsyncTask(TimeLineDao timeLineDao) {
+            this.timeLineDao = timeLineDao;
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            String categoryUUID = params[0];
+            timeLineDao.deleteTimelinesByCategoryUUID(categoryUUID);
+            return null;
+        }
+    }
+
+
     public LiveData<List<TimeLineEntity>> getAllTimeLine() {
         return timeLineDao.getAllTimeLine();
     }

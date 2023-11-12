@@ -3,6 +3,7 @@ package com.xlntsmmr.xlnt_timeline.BottomSheetFragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -29,13 +30,19 @@ import com.xlntsmmr.xlnt_timeline.Entity.TimeLineEntity;
 import com.xlntsmmr.xlnt_timeline.ViewModel.CategoryViewModel;
 import com.xlntsmmr.xlnt_timeline.databinding.BottomSheetFragmentDialogAddRofBinding;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
 public class AddROFBottomSheetFragment extends BottomSheetDialogFragment implements DatePickerBottomSheetFragment.OnDateSelectedListener {
 
     String TAG = "AddROFBottomSheetFragment";
+
+    int currentNightMode;
+    boolean isNightMode;
 
     private BottomSheetFragmentDialogAddRofBinding binding;
     private CategoryViewModel categoryViewModel;
@@ -60,7 +67,7 @@ public class AddROFBottomSheetFragment extends BottomSheetDialogFragment impleme
         this.select_year = select_year;
         this.select_month = select_month;
         this.select_day = select_day;
-        Log.d(TAG, ""+select_year+" "+select_month+" "+select_day);
+        Log.d(TAG, "" + select_year + " " + select_month + " " + select_day);
     }
 
     private OnROFDataListener mListener;
@@ -77,6 +84,9 @@ public class AddROFBottomSheetFragment extends BottomSheetDialogFragment impleme
         // Inflate the layout for this fragment
         binding = BottomSheetFragmentDialogAddRofBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
+
+        currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        isNightMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES;
 
 //        setStyle(STYLE_NORMAL, R.style.RoundCornerBottomSheetDialogTheme);
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -105,100 +115,130 @@ public class AddROFBottomSheetFragment extends BottomSheetDialogFragment impleme
         categoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), new Observer<List<CategoryEntity>>() {
             @Override
             public void onChanged(List<CategoryEntity> categoryEntities) {
-                for(int i =0;i<categoryEntities.size();i++){
+
+                ArrayList<CategoryEntity> arr_category = new ArrayList<>();
+                arr_category.addAll(categoryEntities);
+
+                Collections.sort(arr_category, new Comparator<CategoryEntity>() {
+                    @Override
+                    public int compare(CategoryEntity category1, CategoryEntity category2) {
+                        return Integer.compare(category1.getPosition(), category2.getPosition());
+                    }
+                });
+
+                for (int i = 0; i < arr_category.size(); i++) {
                     Chip chip = new Chip(getContext());
-                    chip.setText(categoryEntities.get(i).getTitle());
+                    chip.setText(arr_category.get(i).getTitle());
                     chip.setCheckable(true);
                     chip.setChipStrokeWidth(3);
-                    chip.setChipBackgroundColorResource(R.color.white);
+
+                    if (isNightMode) {
+                        chip.setChipBackgroundColorResource(R.color.bottomSheetBackground_dark);
+                    } else {
+                        chip.setChipBackgroundColorResource(R.color.white);
+                    }
+
                     chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            if(isChecked){
+                            if (isChecked) {
                                 chip.setChipBackgroundColorResource(R.color.main_orange);
                                 chip.setChipStrokeWidth(0);
                                 chip.setTextColor(getResources().getColor(R.color.white, getContext().getTheme()));
-                            }else{
-                                chip.setChipBackgroundColorResource(R.color.white);
-                                chip.setChipStrokeWidth(3);
-                                chip.setTextColor(getResources().getColor(R.color.black, getContext().getTheme()));
+                            } else {
+                                if (isNightMode) {
+                                    chip.setChipBackgroundColorResource(R.color.bottomSheetBackground_dark);
+                                    chip.setChipStrokeWidth(3);
+                                    chip.setTextColor(getResources().getColor(R.color.white, getContext().getTheme()));
+                                } else {
+                                    chip.setChipBackgroundColorResource(R.color.white);
+                                    chip.setChipStrokeWidth(3);
+                                    chip.setTextColor(getResources().getColor(R.color.black, getContext().getTheme()));
+                                }
                             }
-                        }
-                    });
-                    binding.cgCategory.addView(chip);
-                }
+                    }
+                });
+                binding.cgCategory.addView(chip);
             }
-        });
+        }
+    });
 
-        binding.edtDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerBottomSheetFragment datePickerBottomSheetFragment = new DatePickerBottomSheetFragment(select_year, select_month,select_day);
-                datePickerBottomSheetFragment.setOnDateSelectedListener(AddROFBottomSheetFragment.this);
-                datePickerBottomSheetFragment.show(getParentFragmentManager(), "DatePickerBottomSheetFragment");
-            }
-        });
+        binding.edtDate.setOnClickListener(new View.OnClickListener()
 
-        binding.btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+    {
+        @Override
+        public void onClick (View v){
+        DatePickerBottomSheetFragment datePickerBottomSheetFragment = new DatePickerBottomSheetFragment(select_year, select_month, select_day);
+        datePickerBottomSheetFragment.setOnDateSelectedListener(AddROFBottomSheetFragment.this);
+        datePickerBottomSheetFragment.show(getParentFragmentManager(), "DatePickerBottomSheetFragment");
+    }
+    });
 
-        binding.btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String contents = binding.edtContents.getText().toString();
+        binding.btnClose.setOnClickListener(new View.OnClickListener()
 
-                if(contents.isEmpty()){
-                    binding.edtContents.setError("내용을 입력해주세요.");
-                    return;
-                }
+    {
+        @Override
+        public void onClick (View v){
+        dismiss();
+    }
+    });
 
-                int year = Integer.parseInt((String) binding.edtDate.getText().toString().substring(0,4));
-                int month =Integer.parseInt((String) binding.edtDate.getText().toString().substring(6,8));
-                int day = Integer.parseInt((String) binding.edtDate.getText().toString().substring(10,12));
+        binding.btnAdd.setOnClickListener(new View.OnClickListener()
 
-                String memo = binding.edtMemo.getText().toString();
+    {
+        @Override
+        public void onClick (View v){
+        String contents = binding.edtContents.getText().toString();
 
-                if(binding.cgCategory.getCheckedChipIds().size()<1){
-                    binding.tvRequireSelect.setVisibility(View.VISIBLE);
-                    return;
-                }
+        if (contents.isEmpty()||contents.trim().isEmpty()) {
+            binding.edtContents.setError("내용을 입력해주세요.");
+            return;
+        }
 
-                Chip selectedChip = binding.cgCategory.findViewById(binding.cgCategory.getCheckedChipIds().get(0));
-                int position = binding.cgCategory.indexOfChild(selectedChip);
-                String category_uuid = categoryViewModel.getAllCategories().getValue().get(position).getUuid();
-                String category = categoryViewModel.getAllCategories().getValue().get(position).getTitle();
+        int year = Integer.parseInt((String) binding.edtDate.getText().toString().substring(0, 4));
+        int month = Integer.parseInt((String) binding.edtDate.getText().toString().substring(6, 8));
+        int day = Integer.parseInt((String) binding.edtDate.getText().toString().substring(10, 12));
 
-                Calendar calendar = Calendar.getInstance();
-                int currentYear = calendar.get(Calendar.YEAR);
-                int currentMonth = calendar.get(Calendar.MONTH) + 1; // 월은 0부터 시작하므로 +1 해줍니다.
-                int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-                int currentHour = calendar.get(Calendar.HOUR);
-                int currentMinute = calendar.get(Calendar.MINUTE);
-                int currnetSecond = calendar.get(Calendar.SECOND);
+        String memo = binding.edtMemo.getText().toString();
 
-                TimeLineEntity timeLine = new TimeLineEntity(
-                        UUID.randomUUID().toString(), category_uuid, category,
-                        contents, memo,0,
-                        year, month, day,
-                        currentYear, currentMonth, currentDay,
-                        currentHour, currentMinute,currnetSecond,
-                        0,
-                        false, 0, 0);
+        if (binding.cgCategory.getCheckedChipIds().size() < 1) {
+            binding.tvRequireSelect.setVisibility(View.VISIBLE);
+            return;
+        }
 
-                if (mListener != null) {
-                    mListener.onROFDataListener(timeLine);
-                }
+        Chip selectedChip = binding.cgCategory.findViewById(binding.cgCategory.getCheckedChipIds().get(0));
+        int position = binding.cgCategory.indexOfChild(selectedChip);
+        Log.d(TAG, "binding.cgCategory: " + position);
+        String category_uuid = categoryViewModel.getAllCategories().getValue().get(position).getUuid();
+        String category = categoryViewModel.getAllCategories().getValue().get(position).getTitle();
 
-                dismiss();
-            }
-        });
+        Calendar calendar = Calendar.getInstance();
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentMonth = calendar.get(Calendar.MONTH) + 1; // 월은 0부터 시작하므로 +1 해줍니다.
+        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+        int currentHour = calendar.get(Calendar.HOUR);
+        int currentMinute = calendar.get(Calendar.MINUTE);
+        int currnetSecond = calendar.get(Calendar.SECOND);
+
+        TimeLineEntity timeLine = new TimeLineEntity(
+                UUID.randomUUID().toString(), category_uuid, category,
+                contents, memo, 0,
+                year, month, day,
+                currentYear, currentMonth, currentDay,
+                currentHour, currentMinute, currnetSecond,
+                0,
+                false, 0, 0);
+
+        if (mListener != null) {
+            mListener.onROFDataListener(timeLine);
+        }
+
+        dismiss();
+    }
+    });
 
         return rootView;
-    }
+}
 
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {

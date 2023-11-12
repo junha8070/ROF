@@ -23,4 +23,14 @@ public interface CategoryDao {
 
     @Query("UPDATE category SET title = :newTitle WHERE uuid = :categoryUUID")
     void editCategory(String categoryUUID, String newTitle);
+
+    @Query("SELECT COUNT(*) FROM category")
+    LiveData<Integer> getCategoryCount();
+
+    @Query("UPDATE category SET position = :newPosition WHERE uuid = :categoryUUID")
+    void updateCategoryPosition(String categoryUUID, int newPosition);
+
+    @Query("UPDATE category SET position = position - 1 WHERE position > :currentPosition")
+    void decrementCategoryPositions(int currentPosition);
+
 }

@@ -9,24 +9,26 @@
         style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="0dp"
+        android:gravity="center_vertical"
+        android:minHeight="0dp"
+        android:padding="0dp"
         app:icon="@drawable/ic_round_square_status"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:rippleColor="@null" />
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/edt_contents"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_contents"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:inputType="none"
-        android:longClickable="false"
-        android:textIsSelectable="false"
+        android:layout_height="25dp"
+        android:layout_marginStart="10dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center_vertical|start"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_status"
         app:layout_constraintEnd_toStartOf="@+id/btn_more"
         app:layout_constraintStart_toEndOf="@+id/btn_status"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_status"
         app:textInputLayoutFocusedRectEnabled="false" />
 
     <com.google.android.material.button.MaterialButton
@@ -34,8 +36,9 @@
         style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:rippleColor="@color/transparent"
         app:icon="@drawable/baseline_more_horiz"
-        app:iconTint="@color/Resolution_Blue"
+        app:iconTint="@color/main_orange"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

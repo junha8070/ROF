@@ -1,5 +1,8 @@
 package com.xlntsmmr.xlnt_timeline.Entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -8,7 +11,7 @@ import androidx.room.PrimaryKey;
 import java.util.UUID;
 
 @Entity(tableName = "category")
-public class CategoryEntity {
+public class CategoryEntity implements Parcelable{
 
     @PrimaryKey
     @NonNull
@@ -20,6 +23,9 @@ public class CategoryEntity {
 
     @ColumnInfo(name = "title")
     String title;
+
+    @ColumnInfo(name = "position")
+    int position;
 
     public String getUuid() {
         return uuid;
@@ -45,9 +51,52 @@ public class CategoryEntity {
         this.title = title;
     }
 
-    public CategoryEntity(String uuid, String color, String title) {
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public CategoryEntity(String uuid, String color, String title, int position) {
         this.uuid = uuid;
         this.color = color;
         this.title = title;
+        this.position = position;
+    }
+
+    protected CategoryEntity(Parcel in) {
+        uuid = in.readString();
+        color = in.readString();
+        title = in.readString();
+        position = in.readInt();
+    }
+
+    public static final Parcelable.Creator<CategoryEntity> CREATOR = new Parcelable.Creator<CategoryEntity>() {
+        @Override
+        public CategoryEntity createFromParcel(Parcel in) {
+            return new CategoryEntity(in);
+        }
+
+        @Override
+        public CategoryEntity[] newArray(int size) {
+            return new CategoryEntity[size];
+        }
+    };
+
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(uuid);
+        dest.writeString(color);
+        dest.writeString(title);
+        dest.writeInt(position);
     }
 }

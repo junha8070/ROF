@@ -46,5 +46,13 @@ public class TimeLineViewModel extends AndroidViewModel {
         timeLineRepository.updateTimeLine(timeLine);
     }
 
+    public void updateCategoryByCategoryUUID(String categoryUUID, String newCategory) {
+        timeLineRepository.updateCategoryByCategoryUUID(categoryUUID, newCategory);
+    }
+
+    public void deleteTimelinesByCategoryUUID(String categoryUUID) {
+        timeLineRepository.deleteTimelinesByCategoryUUID(categoryUUID);
+    }
+
 
 }

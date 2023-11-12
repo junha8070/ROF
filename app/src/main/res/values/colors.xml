@@ -47,6 +47,8 @@
 
     <color name="blank">#B0B0B0</color>
 
+    <color name="category_chip_background">#92F3F5FA</color>
+
     <!--상태-->
     <color name="ready_gray">#F34C5E</color>
     <color name="onGoing_green">#FBBA30</color>

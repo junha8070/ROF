@@ -20,18 +20,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_home"
             app:navigationIconTint="@color/main_orange"
-            app:titleTextAppearance="@style/Toolbar.TitleText">
-
-            <TextView
-                android:id="@+id/tv_time"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text=""
-                android:textSize="20dp"
-                android:visibility="gone" />
-
-        </com.google.android.material.appbar.MaterialToolbar>
+            app:titleTextAppearance="@style/Toolbar.TitleText"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/gl_entire_ver_left"
@@ -64,7 +53,7 @@
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/seoulnamsan_b"
                 android:gravity="center_vertical"
-                android:text="2023"
+                android:text="@string/basic_zero"
                 android:textColor="@color/main_orange"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -104,7 +93,7 @@
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/seoulnamsan_b"
                 android:gravity="center_vertical|end"
-                android:text="10"
+                android:text="@string/basic_zero"
                 android:textColor="@color/main_orange"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -317,7 +306,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checkable="true"
-                android:text="Ready"
+                android:text="@string/ready"
                 app:chipIcon="@drawable/ic_round_square_status"
                 app:chipIconTint="@color/ready_gray"
                 app:chipStrokeWidth="0dp" />
@@ -327,7 +316,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checkable="true"
-                android:text="On Going"
+                android:text="@string/onGoing"
                 app:chipIcon="@drawable/ic_round_square_status"
                 app:chipIconTint="@color/onGoing_green"
                 app:chipStrokeWidth="0dp" />
@@ -337,7 +326,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checkable="true"
-                android:text="Finish"
+                android:text="@string/finish"
                 app:chipIcon="@drawable/ic_round_square_status"
                 app:chipIconTint="@color/finish_blue"
                 app:chipStrokeWidth="0dp" />
@@ -349,9 +338,21 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:overScrollMode="never"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
+            app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
             app:layout_constraintTop_toBottomOf="@+id/cg_status" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_list_move"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_list_move"
+            app:iconTint="@color/main_orange"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
+            app:layout_constraintTop_toBottomOf="@+id/rv_todo" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_add"

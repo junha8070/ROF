@@ -24,6 +24,27 @@ public class CategoryRepository {
         new InsertCategoryAsyncTask(categoryDao).execute(category);
     }
 
+    public void updateCategoryPositions(List<CategoryEntity> categories) {
+        new UpdateCategoryPositionsAsyncTask(categoryDao).execute(categories);
+    }
+
+    private static class UpdateCategoryPositionsAsyncTask extends AsyncTask<List<CategoryEntity>, Void, Void> {
+        private CategoryDao categoryDao;
+
+        UpdateCategoryPositionsAsyncTask(CategoryDao categoryDao) {
+            this.categoryDao = categoryDao;
+        }
+
+        @Override
+        protected Void doInBackground(List<CategoryEntity>... categoriesList) {
+            List<CategoryEntity> categories = categoriesList[0];
+            for (CategoryEntity category : categories) {
+                categoryDao.updateCategoryPosition(category.getUuid(), category.getPosition());
+            }
+            return null;
+        }
+    }
+
     private static class InsertCategoryAsyncTask extends AsyncTask<CategoryEntity, Void, Void> {
 
         private CategoryDao categoryDao;
@@ -37,6 +58,10 @@ public class CategoryRepository {
             categoryDao.insertCategory(categories[0]);
             return null;
         }
+    }
+
+    public LiveData<Integer> getCategoryCount() {
+        return categoryDao.getCategoryCount();
     }
 
     public LiveData<List<CategoryEntity>> getAllCategories() {
@@ -82,5 +107,25 @@ public class CategoryRepository {
             return null;
         }
     }
+
+    public void decrementCategoryPositions(int currentPosition) {
+        new DecrementCategoryPositionsAsyncTask(categoryDao).execute(currentPosition);
+    }
+
+    private static class DecrementCategoryPositionsAsyncTask extends AsyncTask<Integer, Void, Void> {
+        private CategoryDao categoryDao;
+
+        DecrementCategoryPositionsAsyncTask(CategoryDao categoryDao) {
+            this.categoryDao = categoryDao;
+        }
+
+        @Override
+        protected Void doInBackground(Integer... positions) {
+            int currentPosition = positions[0];
+            categoryDao.decrementCategoryPositions(currentPosition);
+            return null;
+        }
+    }
+
 }
 

@@ -31,4 +31,10 @@ public interface TimeLineDao {
     @Update
     void updateTimeLine(TimeLineEntity timeLine);
 
+    @Query("UPDATE timeline SET category = :newCategory WHERE category_uuid = :categoryUUID")
+    void updateCategoryByCategoryUUID(String categoryUUID, String newCategory);
+
+    @Query("DELETE FROM timeline WHERE category_uuid = :categoryUUID")
+    void deleteTimelinesByCategoryUUID(String categoryUUID);
+
 }

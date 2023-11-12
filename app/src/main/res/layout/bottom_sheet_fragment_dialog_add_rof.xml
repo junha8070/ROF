@@ -40,7 +40,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:hint="날짜"
+        android:hint="@string/date"
         app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
         app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
         app:layout_constraintTop_toBottomOf="@+id/btn_close">
@@ -48,6 +48,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edt_date"
             android:inputType="none"
+            style="@style/TextInputEditText"
             android:layout_width="match_parent"
             android:focusable="false"
             android:focusableInTouchMode="false"
@@ -63,6 +64,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/contents"
         android:maxWidth="488dp"
+        app:errorEnabled="true"
         app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
         app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
         app:layout_constraintTop_toBottomOf="@+id/layout_date">
@@ -70,6 +72,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edt_contents"
             android:layout_width="match_parent"
+            style="@style/TextInputEditText"
             android:layout_height="match_parent"
             android:imeOptions="actionNext"
             android:lines="1"
@@ -93,6 +96,7 @@
             android:id="@+id/edt_memo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            style="@style/TextInputEditText"
             android:lines="1"
             android:maxWidth="488dp"
             android:maxLines="1" />
@@ -112,7 +116,7 @@
         android:id="@+id/tv_require_select"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:text="@string/require_selection"
         android:textColor="@color/carnation"
         android:visibility="gone"

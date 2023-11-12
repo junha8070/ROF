@@ -28,8 +28,12 @@ import com.xlntsmmr.xlnt_timeline.ViewModel.CategoryViewModel;
 import com.xlntsmmr.xlnt_timeline.ViewModel.TimeLineViewModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StatusEntireListFragment extends Fragment {
 
@@ -139,8 +143,11 @@ public class StatusEntireListFragment extends Fragment {
                                     }
                                 }
                             }
-                            arr_ROF.put(arr_categoryEntities.get(r), arr_timeLineDTOS);
-                            arr_timeLineDTOS = new ArrayList<>();
+
+                            if(arr_timeLineDTOS.size()>0){
+                                arr_ROF.put(arr_categoryEntities.get(r), arr_timeLineDTOS);
+                                arr_timeLineDTOS = new ArrayList<>();
+                            }
                         }
                         setAdapter();
                     }
@@ -152,7 +159,24 @@ public class StatusEntireListFragment extends Fragment {
     }
 
     private void setAdapter() {
-        timeLineAdapter = new TimeLineAdapter(arr_ROF);
+
+        List<Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>>> list = new ArrayList<>(arr_ROF.entrySet());
+
+        // Sort the list based on CategoryEntity's position
+        Collections.sort(list, new Comparator<Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>>>() {
+            @Override
+            public int compare(Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>> o1, Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>> o2) {
+                return Integer.compare(o1.getKey().getPosition(), o2.getKey().getPosition());
+            }
+        });
+
+        // Create a new sorted HashMap
+        LinkedHashMap<CategoryEntity, ArrayList<TimeLineDTO>> sortedMap = new LinkedHashMap<>();
+        for (Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>> entry : list) {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+
+        timeLineAdapter = new TimeLineAdapter(sortedMap);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         binding.rvContents.setLayoutManager(layoutManager);
         binding.rvContents.setAdapter(timeLineAdapter);

@@ -17,12 +17,14 @@ public class CategoryViewModel extends AndroidViewModel {
 
 
     private LiveData<List<CategoryEntity>> allCategories;
+    private LiveData<Integer> categoryCount;
 
 
     public CategoryViewModel(@NonNull Application application) {
         super(application);
         repository = new CategoryRepository(application);
         allCategories = repository.getAllCategories();
+        categoryCount = repository.getCategoryCount();
     }
 
     public LiveData<List<CategoryEntity>> getAllCategories() {
@@ -40,4 +42,17 @@ public class CategoryViewModel extends AndroidViewModel {
     public void editCategory(String categoryUUID, String newTitle) {
         repository.editCategory(categoryUUID, newTitle);
     }
+
+    public LiveData<Integer> getCategoryCount() {
+        return categoryCount;
+    }
+
+    public void updateCategoryPositions(List<CategoryEntity> categories) {
+        repository.updateCategoryPositions(categories);
+    }
+
+    public void decrementCategoryPositions(int currentPosition) {
+        repository.decrementCategoryPositions(currentPosition);
+    }
+
 }

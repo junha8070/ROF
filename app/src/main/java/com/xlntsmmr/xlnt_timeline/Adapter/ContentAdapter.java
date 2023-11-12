@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textview.MaterialTextView;
 import com.xlntsmmr.xlnt_timeline.DTO.ContentDTO;
 import com.xlntsmmr.xlnt_timeline.R;
 import com.xlntsmmr.xlnt_timeline.DTO.TimeLineDTO;
@@ -72,8 +73,8 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
                 break;
         }
 
-        holder.edt_contents.setText(contentDTO.getContent());
-        Log.d(TAG, contentDTO.getContent());
+        holder.tv_contents.setText(contentDTO.getContent());
+//        Log.d(TAG, contentDTO.getContent());
 
         holder.btn_more.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,9 +86,9 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
         holder.btn_status.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "ContentAdapter_btn_status clicked");
+//                Log.d(TAG, "ContentAdapter_btn_status clicked");
                 if (listener != null) {
-                    Log.d(TAG, "ContentAdapter_btn_status listener worked");
+//                    Log.d(TAG, "ContentAdapter_btn_status listener worked");
                     listener.onStatusButtonClick(arr_timeline.get(position).getUUID(), contentDTO.getStatus());
                 }
             }
@@ -102,7 +103,7 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
             }
         });
 
-        holder.edt_contents.setOnClickListener(new View.OnClickListener() {
+        holder.tv_contents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(onEdtAndMoreButtonClickListener!=null){
@@ -115,20 +116,20 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, String.valueOf("사이즈"+arr_timeline.size()));
+//        Log.d(TAG, String.valueOf("사이즈"+arr_timeline.size()));
         return arr_timeline.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         MaterialButton btn_status, btn_more;
-        TextInputEditText edt_contents;
+        MaterialTextView tv_contents;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             // View 초기화 작업
             btn_status = itemView.findViewById(R.id.btn_status);
-            edt_contents = itemView.findViewById(R.id.edt_contents);
+            tv_contents = itemView.findViewById(R.id.tv_contents);
             btn_more = itemView.findViewById(R.id.btn_more);
         }
     }

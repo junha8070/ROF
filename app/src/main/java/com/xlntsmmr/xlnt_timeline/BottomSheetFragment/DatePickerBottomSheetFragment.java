@@ -55,11 +55,13 @@ public class DatePickerBottomSheetFragment extends BottomSheetDialogFragment {
         binding.dayPicker.setMaxValue(31);
         binding.dayPicker.setMinValue(1);
 
-        if(select_year!=0&&select_month!=0&&select_day!=0){
+        // 년도와 월에 맞는 일자 설정
+        if (select_year != 0 && select_month != 0) {
             binding.yearPicker.setValue(select_year);
             binding.monthPicker.setValue(select_month);
+            updateDayPicker(select_year, select_month); // 일자 업데이트
             binding.dayPicker.setValue(select_day);
-        }else{
+        } else {
             Calendar calendar = Calendar.getInstance();
             int currentYear = calendar.get(Calendar.YEAR);
             int currentMonth = calendar.get(Calendar.MONTH) + 1; // 월은 0부터 시작하므로 +1 해줍니다.
@@ -68,8 +70,20 @@ public class DatePickerBottomSheetFragment extends BottomSheetDialogFragment {
             // NumberPicker에 현재 날짜를 설정합니다.
             binding.yearPicker.setValue(currentYear);
             binding.monthPicker.setValue(currentMonth);
+            updateDayPicker(currentYear, currentMonth); // 일자 업데이트
             binding.dayPicker.setValue(currentDay);
         }
+
+        // 월이나 년도가 변경될 때마다 일자 업데이트
+        binding.monthPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
+            int selectedYear = binding.yearPicker.getValue();
+            updateDayPicker(selectedYear, newVal);
+        });
+
+        binding.yearPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
+            int selectedMonth = binding.monthPicker.getValue();
+            updateDayPicker(newVal, selectedMonth);
+        });
 
         return rootView;
     }
@@ -88,6 +102,15 @@ public class DatePickerBottomSheetFragment extends BottomSheetDialogFragment {
         if (mListener != null) {
             mListener.onDateSelected(formattedDate);
         }
+    }
+
+    private void updateDayPicker(int year, int month) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month - 1, 1); // 월은 0부터 시작하므로 -1 해줍니다.
+        int daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        binding.dayPicker.setMaxValue(daysInMonth);
+        binding.dayPicker.setMinValue(1);
     }
 
     public void setOnDateSelectedListener(OnDateSelectedListener listener) {
