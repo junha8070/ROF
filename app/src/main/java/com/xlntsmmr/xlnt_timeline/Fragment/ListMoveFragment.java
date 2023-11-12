@@ -1,4 +1,4 @@
-package com.xlntsmmr.xlnt_timeline.DialogFragmet;
+package com.xlntsmmr.xlnt_timeline.Fragment;
 
 import android.os.Bundle;
 
@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.xlntsmmr.xlnt_timeline.Adapter.CategoryListMoveAdapter;
+import com.xlntsmmr.xlnt_timeline.DialogFragmet.LoadingDialogFragment;
 import com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity;
 import com.xlntsmmr.xlnt_timeline.ItemMoveCallback;
 import com.xlntsmmr.xlnt_timeline.R;

@@ -54,7 +54,7 @@
     </fragment>
     <fragment
         android:id="@+id/listMoveDialogFragment"
-        android:name="com.xlntsmmr.xlnt_timeline.DialogFragmet.ListMoveFragment"
+        android:name="com.xlntsmmr.xlnt_timeline.Fragment.ListMoveFragment"
         android:label="fragment_list_move_dialog"
         tools:layout="@layout/fragment_list_move_dialog" >
         <action
