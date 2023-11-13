@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavAction;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -39,11 +40,13 @@ public class ListMoveFragment extends Fragment {
 
     private CategoryViewModel categoryViewModel;
     private ArrayList<CategoryEntity> arr_category;
+    private ArrayList<CategoryEntity> arr_change_category;
     private LoadingDialogFragment loadingDialog;
     ItemTouchHelper.Callback callback;
     ItemTouchHelper touchHelper;
     ItemMoveCallback itemMoveCallback;
 
+    String navigate = "";
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,9 +66,13 @@ public class ListMoveFragment extends Fragment {
 
         // Bundle에서 데이터를 받아옵니다.
         arr_category = getArguments().getParcelableArrayList("category_list");
+        navigate = getArguments().getString("navigate");
+        Log.d(TAG, "navigate: "+navigate);
+        arr_change_category = new ArrayList<>();
 
         if (arr_category != null) {
 
+            arr_change_category.addAll(arr_category);
             Collections.sort(arr_category, new Comparator<CategoryEntity>() {
                 @Override
                 public int compare(CategoryEntity category1, CategoryEntity category2) {
@@ -88,22 +95,26 @@ public class ListMoveFragment extends Fragment {
                     for (int i = 0; i < change_position_arr_category.size(); i++) {
                         Log.d(TAG, "setPosition: " + change_position_arr_category.get(i).getTitle());
                     }
-                    requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
-                        @Override
-                        public void handleOnBackPressed() {
-                            // Handle the back button press here
-                            updateListPosition(change_position_arr_category);
-                        }
-                    });
-
-                    binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            updateListPosition(change_position_arr_category);
-                        }
-                    });
+                    arr_change_category.clear();
+                    arr_change_category.addAll(change_position_arr_category);
                 }
             });
+
+            requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                @Override
+                public void handleOnBackPressed() {
+                    // Handle the back button press here
+                    updateListPosition(arr_change_category);
+                }
+            });
+            binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    updateListPosition(arr_change_category);
+                }
+            });
+
+
         } else {
             showLoadingDialog();
         }
@@ -119,7 +130,15 @@ public class ListMoveFragment extends Fragment {
         // 변경된 위치 정보를 Repository에 전달하여 업데이트 수행
         categoryViewModel.updateCategoryPositions(change_position_arr_category);
 
-        Navigation.findNavController(requireView()).navigate(R.id.action_listMoveDialogFragment_to_timeLineFragment);
+        Log.d(TAG, "updateListPosition");
+
+        if(navigate.equals("timeline")){
+            Log.d(TAG, "updateListPosition 1");
+            Navigation.findNavController(requireView()).navigate(R.id.action_listMoveDialog_to_timeLine);
+        }else if(navigate.equals("home")){
+            Log.d(TAG, "updateListPosition 2");
+            Navigation.findNavController(requireView()).navigate(R.id.action_listMoveDialog_to_home);
+        }
     }
 
     private void showLoadingDialog() {

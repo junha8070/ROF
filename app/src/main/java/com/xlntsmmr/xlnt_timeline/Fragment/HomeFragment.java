@@ -1,5 +1,7 @@
 package com.xlntsmmr.xlnt_timeline.Fragment;
 
+import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,13 +90,7 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
 
-        PackageInfo pi = null;
-        try {
-            pi = requireActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        currentVersion = pi.versionName;
+        currentVersion = getVersionName(requireActivity());
 
         configViewModel.getIsRemoteConfigLoadFinish().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
@@ -147,7 +144,7 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
         });
 
         binding.btnTimeline.setOnClickListener(v -> {
-            Navigation.findNavController(requireView()).navigate(R.id.action_homeFragment_to_timeLineFragment);
+            Navigation.findNavController(requireView()).navigate(R.id.action_home_to_timeLine);
         });
 
         binding.mcvReady.setOnClickListener(new View.OnClickListener() {
@@ -155,7 +152,7 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putInt("status", 0);
-                Navigation.findNavController(requireView()).navigate(R.id.action_homeFragment_to_statusEntireListFragment, bundle);
+                Navigation.findNavController(requireView()).navigate(R.id.action_home_to_statusEntireList, bundle);
             }
         });
 
@@ -164,7 +161,24 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putInt("status", 1);
-                Navigation.findNavController(requireView()).navigate(R.id.action_homeFragment_to_statusEntireListFragment, bundle);
+                Navigation.findNavController(requireView()).navigate(R.id.action_home_to_statusEntireList, bundle);
+            }
+        });
+
+        binding.btnListMove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                categoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), new Observer<List<CategoryEntity>>() {
+                    @Override
+                    public void onChanged(List<CategoryEntity> categoryEntities) {
+                        if(categoryEntities!=null){
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelableArrayList("category_list", (ArrayList<? extends Parcelable>) categoryEntities);
+                            bundle.putString("navigate", "home");
+                            Navigation.findNavController(requireView()).navigate(R.id.action_home_to_listMoveDialog, bundle);
+                        }
+                    }
+                });
             }
         });
 
@@ -173,7 +187,7 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putInt("status", 2);
-                Navigation.findNavController(requireView()).navigate(R.id.action_homeFragment_to_statusEntireListFragment, bundle);
+                Navigation.findNavController(requireView()).navigate(R.id.action_home_to_statusEntireList, bundle);
             }
         });
 
@@ -191,9 +205,7 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
                     @Override
                     public void onChanged(Boolean isRemoteConfigLoadFinish) {
                         if(isRemoteConfigLoadFinish){
-                            try {
-                                PackageInfo pi = requireActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
-                                String currentVersion = pi.versionName;
+                                currentVersion = getVersionName(requireActivity());
                                 boolean forceUpdate = configViewModel.getForceUpdate();
                                 String latestVersion = configViewModel.getLatestVersion();
                                 String minVersion = configViewModel.getMinVersion();
@@ -213,14 +225,8 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
                                 Log.d(TAG, "jsonNewFunction : "+jsonNewFunction);
 
                                 infoBottomSheetFragment.show(getParentFragmentManager(), "InfoBottomSheetFragment");
-                            } catch (PackageManager.NameNotFoundException e) {
-                                Toast.makeText(getContext(), "오류가 발생하였습니다.", Toast.LENGTH_SHORT).show();
-                                throw new RuntimeException(e);
-                            }
                         }else{
-                            try {
-                                PackageInfo pi = requireActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
-                                String currentVersion = pi.versionName;
+                                currentVersion = getVersionName(requireActivity());
                                 boolean forceUpdate = false;
                                 String latestVersion = "버전 확인 중";
                                 String minVersion = "버전 확인 중";
@@ -240,10 +246,6 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
                                 Log.d(TAG, "jsonNewFunction : "+jsonNewFunction);
 
                                 infoBottomSheetFragment.show(getParentFragmentManager(), "InfoBottomSheetFragment");
-                            } catch (PackageManager.NameNotFoundException e) {
-                                Toast.makeText(getContext(), "오류가 발생하였습니다.", Toast.LENGTH_SHORT).show();
-                                throw new RuntimeException(e);
-                            }
                         }
                     }
                 });
@@ -291,10 +293,11 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
         }
         prev_timeLineEntities_size = timeLineEntities.size();
 
+        Log.d(TAG, "timeLineEntities.size(): "+timeLineEntities.size());
         if(timeLineEntities.size()==0){
-            binding.tvNothing.setVisibility(View.VISIBLE);
+//            binding.tvNothing.setVisibility(View.VISIBLE);
         }else if(timeLineEntities.size()>0){
-            binding.tvNothing.setVisibility(View.INVISIBLE);
+//            binding.tvNothing.setVisibility(View.INVISIBLE);
             for (TimeLineEntity timeline : timeLineEntities) {
                 Status status = getStatusEnum(timeline.getStatus());
 //            countStatus(status);
@@ -310,9 +313,6 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
                         finish_count++;
                         break;
                 }
-                binding.tvReady.setText(String.valueOf(ready_count));
-                binding.tvOnGing.setText(String.valueOf(onGoing_count));
-                binding.tvFinish.setText(String.valueOf(finish_count));
 
                 if (isToday(timeline)) {
                     today_timeline.add(timeline);
@@ -320,7 +320,7 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
             }
 
 
-            updateStatusUI(timeLineEntities.size());
+            updateStatusUIWithAnimation(timeLineEntities.size(), ready_count, onGoing_count, finish_count);
 
             if (todayROFAdapter != null) {
                 todayROFAdapter.setListener((uuid, status) -> {
@@ -365,13 +365,15 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
         }
     }
 
-    private void updateStatusUI(int size) {
-        binding.tvCount.setText(String.valueOf(size));
-    }
-
     private void setupTodayROFAdapter() {
+        Log.d(TAG, "setupTodayROFAdapter");
+        Log.d(TAG, "setupTodayROFAdapter : "+today_timeline.size());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         binding.rvTodayRof.setLayoutManager(layoutManager);
+
+        if(today_timeline.size()>0){
+            binding.tvNothing.setVisibility(View.INVISIBLE);
+        }
 
         todayROFAdapter = new TodayROFAdapter(today_timeline);
         binding.rvTodayRof.setAdapter(todayROFAdapter);
@@ -450,30 +452,59 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
         categoryViewModel.insertCategory(categoryEntity);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG, "onPause");
+    private void updateStatusUIWithAnimation(int size, int ready_size, int onGoing_size, int finish_size) {
+        // 기존의 코드를 이용하여 UI 업데이트
+        binding.tvCount.setText(String.valueOf(size));
+        binding.tvReady.setText(String.valueOf(ready_count));
+        binding.tvOnGing.setText(String.valueOf(onGoing_count));
+        binding.tvFinish.setText(String.valueOf(finish_count));
+
+        // 카운팅 애니메이션 적용
+        int startValue = 0;
+
+        ValueAnimator tv_count_animator = ValueAnimator.ofInt(startValue, size);
+        ValueAnimator ready_animator = ValueAnimator.ofInt(startValue, ready_size);
+        ValueAnimator onGoing_animator = ValueAnimator.ofInt(startValue, onGoing_size);
+        ValueAnimator finish_animator = ValueAnimator.ofInt(startValue, finish_size);
+
+        int animationDuration = getResources().getInteger(R.integer.animation_duration);
+        tv_count_animator.setDuration(animationDuration);
+        ready_animator.setDuration(animationDuration);
+        onGoing_animator.setDuration(animationDuration);
+        finish_animator.setDuration(animationDuration);
+
+        // 값이 변경될 때마다 호출되는 리스너 설정
+        tv_count_animator.addUpdateListener(valueAnimator -> {
+            int animatedValue = (int) valueAnimator.getAnimatedValue();
+            binding.tvCount.setText(String.valueOf(animatedValue));
+        });
+        ready_animator.addUpdateListener(valueAnimator -> {
+            int animatedValue = (int) valueAnimator.getAnimatedValue();
+            binding.tvReady.setText(String.valueOf(animatedValue));
+        });
+        onGoing_animator.addUpdateListener(valueAnimator -> {
+            int animatedValue = (int) valueAnimator.getAnimatedValue();
+            binding.tvOnGing.setText(String.valueOf(animatedValue));
+        });
+        finish_animator.addUpdateListener(valueAnimator -> {
+            int animatedValue = (int) valueAnimator.getAnimatedValue();
+            binding.tvFinish.setText(String.valueOf(animatedValue));
+        });
+
+        tv_count_animator.start();
+        ready_animator.start();
+        onGoing_animator.start();
+        finish_animator.start();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume");
+    // 버전 코드를 가져오는 함수 정의
+    private String getVersionName(Context context) {
+        try {
+            PackageInfo pi = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return pi.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-//        Log.d(TAG, "onDestroyView");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy");
-    }
-
-
 
 }

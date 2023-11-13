@@ -71,9 +71,19 @@ public class StatusEntireListFragment extends Fragment {
         binding.btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(getView()).navigate(R.id.action_statusEntireListFragment_to_homeFragment);
+                Navigation.findNavController(getView()).navigate(R.id.action_statusEntireList_to_home);
             }
         });
+
+//        binding.btnListMove.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Bundle bundle = new Bundle();
+//                bundle.putParcelableArrayList("category_list", arr_categoryEntities);
+//                bundle.putString("navigate", "status");
+//                Navigation.findNavController(requireView()).navigate(R.id.action_statusEntireListFragment_to_listMoveDialogFragment, bundle);
+//            }
+//        });
 
         switch (status) {
             case 0:

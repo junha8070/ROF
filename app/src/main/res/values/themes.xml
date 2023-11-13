@@ -141,4 +141,8 @@
         <item name="android:editTextColor">@color/black</item>
     </style>
 
+    <style name="basic_background">
+        <item name="android:background">@color/white</item>
+    </style>
+
 </resources>

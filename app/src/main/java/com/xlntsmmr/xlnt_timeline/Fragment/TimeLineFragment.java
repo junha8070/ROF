@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavAction;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -157,7 +158,7 @@ public class TimeLineFragment extends Fragment implements AddBottomSheetFragment
         binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(requireView()).navigate(R.id.action_timeLineFragment_to_homeFragment);
+                Navigation.findNavController(requireView()).navigate(R.id.action_timeLine_to_home);
             }
         });
 
@@ -244,9 +245,10 @@ public class TimeLineFragment extends Fragment implements AddBottomSheetFragment
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList("category_list", arr_category);
+                bundle.putString("navigate", "timeline");
 
                 // Navigation을 통해 ListMoveFragment로 이동합니다.
-                Navigation.findNavController(requireView()).navigate(R.id.action_timeLineFragment_to_listMoveDialogFragment, bundle);
+                Navigation.findNavController(requireView()).navigate(R.id.action_timeLine_to_listMoveDialog, bundle);
             }
         });
     }

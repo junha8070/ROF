@@ -11,12 +11,12 @@
         android:label="fragment_time_line"
         tools:layout="@layout/fragment_time_line" >
         <action
-            android:id="@+id/action_timeLineFragment_to_homeFragment"
+            android:id="@+id/action_timeLine_to_home"
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_timeLineFragment_to_listMoveDialogFragment"
+            android:id="@+id/action_timeLine_to_listMoveDialog"
             app:destination="@id/listMoveDialogFragment" >
             <argument
                 android:name="arr_category"
@@ -35,11 +35,14 @@
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_homeFragment_to_timeLineFragment"
+            android:id="@+id/action_home_to_timeLine"
             app:destination="@id/timeLineFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_statusEntireListFragment"
+            android:id="@+id/action_home_to_statusEntireList"
             app:destination="@id/statusEntireListFragment" />
+        <action
+            android:id="@+id/action_home_to_listMoveDialog"
+            app:destination="@id/listMoveDialogFragment" />
     </fragment>
     <fragment
         android:id="@+id/statusEntireListFragment"
@@ -47,7 +50,7 @@
         android:label="fragment_status_entire_list"
         tools:layout="@layout/fragment_status_entire_list" >
         <action
-            android:id="@+id/action_statusEntireListFragment_to_homeFragment"
+            android:id="@+id/action_statusEntireList_to_home"
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
@@ -58,9 +61,14 @@
         android:label="fragment_list_move_dialog"
         tools:layout="@layout/fragment_list_move_dialog" >
         <action
-            android:id="@+id/action_listMoveDialogFragment_to_timeLineFragment"
+            android:id="@+id/action_listMoveDialog_to_timeLine"
             app:destination="@id/timeLineFragment"
             app:popUpTo="@id/timeLineFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_listMoveDialog_to_home"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
     </fragment>
 </navigation>
