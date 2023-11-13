@@ -5,20 +5,17 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.xlntsmmr.xlnt_timeline.Adapter.CalendarAdapter;
-import com.xlntsmmr.xlnt_timeline.Adapter.ContentAdapter;
+import com.xlntsmmr.xlnt_timeline.Adapter.ShimmerCalendarAdapter;
 import com.xlntsmmr.xlnt_timeline.Adapter.TimeLineAdapter;
 import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.AddBottomSheetFragment;
 import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.AddROFBottomSheetFragment;
@@ -48,33 +45,28 @@ import java.util.Map;
 
 public class TimeLineFragment extends Fragment implements AddBottomSheetFragment.OnAddListener, CategoryBottomSheetFragment.OnCategoryNameSetListener, AddROFBottomSheetFragment.OnROFDataListener {
 
-    String TAG = "TimeLineFragment";
-
+    // 클래스 멤버 변수 및 상수 정의
+    private String TAG = "TimeLineFragment";
+    private static final int STATUS_NEW = 0;
+    private static final int STATUS_IN_PROGRESS = 1;
+    private static final int STATUS_COMPLETED = 2;
     private FragmentTimeLineBinding binding;
-
-    // ViewModel
     private CategoryViewModel categoryViewModel;
     private TimeLineViewModel timeLineViewModel;
-
-
-    //
-    TimeLineAdapter timeLineAdapter;
-    ArrayList<CategoryEntity> arr_category;
-    ArrayList<TimeLineDTO> arr_content;
-    ArrayList<TimeLineEntity> arr_timelineEntity;
-
-    HashMap<CategoryEntity, ArrayList<TimeLineDTO>> arr_ROF;
-
-    // Calendar
+    private TimeLineAdapter timeLineAdapter;
+    private ArrayList<CategoryEntity> arr_category;
+    private ArrayList<TimeLineDTO> arr_content;
+    private ArrayList<TimeLineEntity> arr_timelineEntity;
+    private HashMap<CategoryEntity, ArrayList<TimeLineDTO>> arr_ROF;
     private CalendarAdapter calendarAdapter;
+    private ShimmerCalendarAdapter shimmerCalendarAdapter;
     private ArrayList<CalendarDayDTO> calendarDayDTOS;
     private Calendar calendar;
     private Date now;
-
-    int today_year;
-    int today_month;
-    int today_day;
-    int old_position = -1;
+    private int today_year;
+    private int today_month;
+    private int today_day;
+    private int old_position = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,276 +80,119 @@ public class TimeLineFragment extends Fragment implements AddBottomSheetFragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentTimeLineBinding.inflate(inflater, container, false);
-        View rootView = binding.getRoot();
-
-
-
-        return rootView;
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        initializeData();
+        setListeners();
+    }
+
+    private void initializeData() {
         arr_category = new ArrayList<>();
         arr_content = new ArrayList<>();
         arr_ROF = new HashMap<>();
+        initializeDate();
+        calendarDayDTOS = generateCalendarDays();
+        selectTodayDate();
+        category_init(today_year, today_month + 1, today_day);
+        observeTimelines();
+    }
 
+    private void initializeDate() {
         now = new Date();
         calendar = Calendar.getInstance();
         calendar.setTime(now);
         today_year = calendar.get(Calendar.YEAR);
         today_month = calendar.get(Calendar.MONTH);
         today_day = calendar.get(Calendar.DAY_OF_MONTH);
+    }
 
+    private void handlePrevButtonClick() {
+        calendar.add(Calendar.MONTH, -1);
+        handleDateChange();
+    }
+
+    private void handleNextButtonClick() {
+        calendar.add(Calendar.MONTH, 1);
+        handleDateChange();
+    }
+
+    private void handleDateChange() {
         calendarDayDTOS = generateCalendarDays();
-        // 오늘 날짜 선택(1회성)
-        for(int i = 0; i< calendarDayDTOS.size(); i++){
-            if(calendarDayDTOS.get(i)!=null){
-                if (calendarDayDTOS.get(i).getDayOfMonth() == today_day && today_month + 1 == calendarDayDTOS.get(i).getMonth() && today_year == calendarDayDTOS.get(i).getYear()) {
-                    calendarDayDTOS.get(i).setSelected(true);
-                    old_position = i;
-                }
-            }
-        }
+        int position = findNotNullDayPosition(calendarDayDTOS);
+        calendarDayDTOS.get(position).setSelected(true);
+        old_position = position;
+        calendarAdapter = new CalendarAdapter(calendarDayDTOS, arr_timelineEntity);
+        binding.rvCalendar.setAdapter(calendarAdapter);
+        category_init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, 1);
+        setCalendarAdapterClickListener();
+    }
 
-        category_init(today_year, today_month+1, today_day);
+    private void setCalendarAdapter() {
+        calendarAdapter = new CalendarAdapter(calendarDayDTOS, arr_timelineEntity);
+        binding.rvCalendar.setAdapter(calendarAdapter);
+        binding.rvCalendar.setLayoutManager(new GridLayoutManager(getContext(), 7));
+    }
 
-        timeLineViewModel.getAllTimelines().observe(getViewLifecycleOwner(), new Observer<List<TimeLineEntity>>() {
-            @Override
-            public void onChanged(List<TimeLineEntity> timeLineEntities) {
-                arr_timelineEntity = new ArrayList<>();
-                arr_timelineEntity.addAll(timeLineEntities);
-
-                calendarAdapter = new CalendarAdapter(calendarDayDTOS, arr_timelineEntity);
-
-                binding.rvCalendar.setAdapter(calendarAdapter);
-                binding.rvCalendar.setLayoutManager(new GridLayoutManager(getContext(), 7));
-
-                calendarAdapter.setOnItemClickListener(new CalendarAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(int position) {
-                        if (old_position == -1) {
-                            calendarDayDTOS.get(position).setSelected(true);
-                            old_position = position;
-                            calendarAdapter.notifyDataSetChanged();
-                        } else {
-                            calendarDayDTOS.get(old_position).setSelected(false);
-                            calendarDayDTOS.get(position).setSelected(true);
-                            old_position = position;
-                            calendarAdapter.notifyDataSetChanged();
-                        }
-                        category_init(calendarDayDTOS.get(position).getYear(), calendarDayDTOS.get(position).getMonth(), calendarDayDTOS.get(position).getDayOfMonth());
-//                        Log.d(TAG, "날짜: " + calendarDayDTOS.get(position).getDayOfMonth());
-                    }
-                });
-            }
-        });
-
-        binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(requireView()).navigate(R.id.action_timeLineFragment_to_homeFragment);
-            }
-        });
-
-        binding.btnPrev.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                calendar.add(Calendar.MONTH, -1);
-                calendarDayDTOS = generateCalendarDays();
-                calendarDayDTOS.get(findNotNullDayPosition(calendarDayDTOS)).setSelected(true);
-                old_position = findNotNullDayPosition(calendarDayDTOS);
-                calendarAdapter = new CalendarAdapter(calendarDayDTOS, arr_timelineEntity);
-                binding.rvCalendar.setAdapter(calendarAdapter);
-                category_init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1, 1);
-                calendarAdapter.setOnItemClickListener(new CalendarAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(int position) {
-                        if(old_position == -1){
-                            calendarDayDTOS.get(position).setSelected(true);
-                            old_position = position;
-                            calendarAdapter.notifyDataSetChanged();
-                        }else{
-                            calendarDayDTOS.get(old_position).setSelected(false);
-//                            Log.d(TAG, "old_position" + old_position);
-                            calendarDayDTOS.get(position).setSelected(true);
-                            old_position = position;
-                            calendarAdapter.notifyDataSetChanged();
-                        }
-
-
-                        category_init(calendarDayDTOS.get(position).getYear(), calendarDayDTOS.get(position).getMonth(), calendarDayDTOS.get(position).getDayOfMonth());
-//                        Log.d(TAG, "날짜: " + calendarDayDTOS.get(position).getDayOfMonth());
-//                        Log.d(TAG, "position" + position);
-                    }
-                });
-            }
-        });
-
-
-        binding.btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                calendar.add(Calendar.MONTH, 1); // 다음 달로 이동
-                calendarDayDTOS = generateCalendarDays();
-                calendarDayDTOS.get(findNotNullDayPosition(calendarDayDTOS)).setSelected(true);
-                old_position = findNotNullDayPosition(calendarDayDTOS);
-                calendarAdapter = new CalendarAdapter(calendarDayDTOS, arr_timelineEntity);
-                binding.rvCalendar.setAdapter(calendarAdapter);
-                category_init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)+1, 1);
-                calendarAdapter.setOnItemClickListener(new CalendarAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(int position) {
-                        if(old_position == -1){
-                            calendarDayDTOS.get(position).setSelected(true);
-                            old_position = position;
-                            calendarAdapter.notifyDataSetChanged();
-                        }else{
-                            calendarDayDTOS.get(old_position).setSelected(false);
-//                            Log.d(TAG, "old_position" + old_position);
-                            calendarDayDTOS.get(position).setSelected(true);
-                            old_position = position;
-                            calendarAdapter.notifyDataSetChanged();
-                        }
-                        category_init(calendarDayDTOS.get(position).getYear(), calendarDayDTOS.get(position).getMonth(), calendarDayDTOS.get(position).getDayOfMonth());
-//                        Log.d(TAG, "날짜: " + calendarDayDTOS.get(position).getDayOfMonth());
-//                        Log.d(TAG, "position" + position);
-                    }
-                });
-            }
-        });
-
-
-
-        binding.btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AddBottomSheetFragment addBottomSheetFragment = new AddBottomSheetFragment();
-                addBottomSheetFragment.setOnAddListener(TimeLineFragment.this);
-                addBottomSheetFragment.show(getParentFragmentManager(), "AddBottomSheetFragment");
-            }
-        });
-
-        binding.btnListMove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("category_list", arr_category);
-
-                // Navigation을 통해 ListMoveFragment로 이동합니다.
-                Navigation.findNavController(requireView()).navigate(R.id.action_timeLineFragment_to_listMoveDialogFragment, bundle);
-            }
+    private void observeTimelines() {
+        timeLineViewModel.getAllTimelines().observe(getViewLifecycleOwner(), timeLineEntities -> {
+            arr_timelineEntity = new ArrayList<>();
+            arr_timelineEntity.addAll(timeLineEntities);
+            calendarAdapter = new CalendarAdapter(calendarDayDTOS, arr_timelineEntity);
+            setCalendarAdapter();
+            setCalendarAdapterClickListener();
         });
     }
 
-    private int findNotNullDayPosition(ArrayList<CalendarDayDTO> calendarDayDTOS){
-        for(int i = 0; i< calendarDayDTOS.size(); i++){
-            if(calendarDayDTOS.get(i)!=null){
-                return i;
-            }
+    private void selectDate(int position) {
+        if (old_position == -1) {
+            calendarDayDTOS.get(position).setSelected(true);
+            old_position = position;
+            calendarAdapter.notifyDataSetChanged();
+        } else {
+            calendarDayDTOS.get(old_position).setSelected(false);
+            calendarDayDTOS.get(position).setSelected(true);
+            old_position = position;
+            calendarAdapter.notifyDataSetChanged();
         }
-        return 0;
+        category_init(calendarDayDTOS.get(position).getYear(), calendarDayDTOS.get(position).getMonth(), calendarDayDTOS.get(position).getDayOfMonth());
     }
 
-    private ArrayList<CalendarDayDTO> generateCalendarDays() {
-        ArrayList<CalendarDayDTO> days = new ArrayList<>();
-
-        // 현재 날짜 설정
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int dayOfMonth = 1; // 첫 번째 날
-
-        binding.tvCurrentYear.setText(String.valueOf(year));
-        binding.tvCurrentMonth.setText(String.valueOf(month + 1));
-
-        // 시작일의 요일과 주차 계산
-        calendar.set(year, month, dayOfMonth);
-        int startDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK); // 시작일의 요일 (1=일요일, 2=월요일, ...)
-        int numberOfWeeksInMonth = calendar.getActualMaximum(Calendar.WEEK_OF_MONTH); // 해당 월의 주차 수
-        int lastDayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-
-        // 빈 공간 채우기 (시작일 이전)
-        for (int i = 1; i < startDayOfWeek; i++) {
-            days.add(null);
-        }
-
-        // 날짜 채우기
-        for (int i = 1; i <= lastDayOfMonth; i++) {
-            days.add(new CalendarDayDTO(year, month + 1, i));
-        }
-
-        return days;
+    private void setOnStatusButtonClickListener() {
+        timeLineAdapter.setOnStatusButtonClickListener((uuid, status) -> modifyStatus(uuid, status));
     }
 
-    private void category_init(int year, int month, int day) {
-//        Log.d(TAG, year+"년"+month+"월"+day+"일");
-        categoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), new Observer<List<CategoryEntity>>() {
-            @Override
-            public void onChanged(List<CategoryEntity> categoryEntities) {
-                arr_category.clear();
-                arr_category.addAll(categoryEntities);
-
-                timeLineViewModel.getAllTimelines().observe(getViewLifecycleOwner(), new Observer<List<TimeLineEntity>>() {
-                    @Override
-                    public void onChanged(List<TimeLineEntity> timeLineEntities) {
-//                        Log.d(TAG, "timeLineEntities size: "+timeLineEntities.size());
-                        arr_ROF.clear();
-
-                        for (CategoryEntity categoryEntity : categoryEntities) {
-                            ArrayList<TimeLineDTO> timelinesForCategory = new ArrayList<>();
-
-                            for (TimeLineEntity timeLineEntity : timeLineEntities) {
-                                if (timeLineEntity.getCategory_uuid().equals(categoryEntity.getUuid())) {
-                                    TimeDTO timeDTO = new TimeDTO();
-                                    timeDTO.setYear(timeLineEntity.getYear());
-                                    timeDTO.setMonth(timeLineEntity.getMonth());
-                                    timeDTO.setDay(timeLineEntity.getDay());
-
-                                    ContentDTO contentDTO = new ContentDTO();
-                                    contentDTO.setStatus(timeLineEntity.getStatus());
-                                    contentDTO.setContent(timeLineEntity.getContents());
-                                    contentDTO.setCategory_uuid(timeLineEntity.getCategory_uuid());
-                                    contentDTO.setRof_uuid(timeLineEntity.getUuid());
-                                    contentDTO.setAlarm(timeLineEntity.isAlarm());
-
-                                    TimeLineDTO timeLineDTO = new TimeLineDTO();
-                                    timeLineDTO.setUUID(timeLineEntity.getUuid());
-                                    timeLineDTO.setTimeDTO(timeDTO);
-                                    timeLineDTO.setContentDTO(contentDTO);
-
-                                    if(timeDTO.getYear()==year&&timeDTO.getMonth()==month&&timeDTO.getDay()==day){
-                                        timelinesForCategory.add(timeLineDTO);
-                                    }
-                                }
-                            }
-                            if(timelinesForCategory.size() > 0){
-                                arr_ROF.put(categoryEntity, timelinesForCategory);
-                            }
-                        }
-
-                        setAdapter(arr_ROF);
-                    }
-                });
-            }
-        });
+    private void setOnEdtAndMoreButtonClickListener() {
+        timeLineAdapter.setOnEdtAndMoreButtonClickListener(UUID -> showContentsBottomSheet(UUID));
     }
 
+    private void setOnCategoryChipLongClickListener() {
+        timeLineAdapter.setOnCategoryChipLongClickListener((category_UUID, title) -> showCategoryBottomSheet(category_UUID, title));
+    }
+
+    private void showAddBottomSheet() {
+        AddBottomSheetFragment addBottomSheetFragment = new AddBottomSheetFragment();
+        addBottomSheetFragment.setOnAddListener(this);
+        addBottomSheetFragment.show(getParentFragmentManager(), "AddBottomSheetFragment");
+    }
+
+    private void navigateToListMoveFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("category_list", arr_category);
+        bundle.putString("navigate", "timeline");
+        Navigation.findNavController(requireView()).navigate(R.id.action_timeLine_to_listMoveDialog, bundle);
+    }
 
     private void setAdapter(HashMap<CategoryEntity, ArrayList<TimeLineDTO>> arr_ROF) {
         if (arr_category.size() > 0) {
-            // Convert the HashMap to a List for sorting
             List<Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>>> list = new ArrayList<>(arr_ROF.entrySet());
 
-            // Sort the list based on CategoryEntity's position
-            Collections.sort(list, new Comparator<Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>>>() {
-                @Override
-                public int compare(Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>> o1, Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>> o2) {
-                    return Integer.compare(o1.getKey().getPosition(), o2.getKey().getPosition());
-                }
-            });
+            Collections.sort(list, Comparator.comparingInt(o -> o.getKey().getPosition()));
 
-            // Create a new sorted HashMap
             LinkedHashMap<CategoryEntity, ArrayList<TimeLineDTO>> sortedMap = new LinkedHashMap<>();
             for (Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>> entry : list) {
                 sortedMap.put(entry.getKey(), entry.getValue());
@@ -366,60 +201,181 @@ public class TimeLineFragment extends Fragment implements AddBottomSheetFragment
             timeLineAdapter = new TimeLineAdapter(sortedMap);
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             binding.rvTodo.setLayoutManager(layoutManager);
-//            timeLineAdapter.contentAdapter = new ContentAdapter(new ArrayList<>());
             binding.rvTodo.setAdapter(timeLineAdapter);
-            timeLineAdapter.setOnStatusButtonClickListener(new TimeLineAdapter.OnStatusButtonClickListener() {
-                @Override
-                public void onStatusButtonClick(String uuid, int status) {
-//                    Log.d(TAG, "uuid: " + uuid);
-//                    Log.d(TAG, "status: " + status);
-                    modifyStatus(uuid, status);
-                }
-            });
-
-            timeLineAdapter.setOnEdtAndMoreButtonClickListener(new ContentAdapter.OnEdtAndMoreButtonClickListener() {
-                @Override
-                public void onEdtAndMoreButtonClickListener(String UUID) {
-                    ShowContentsBottomFragment showContentsBottomFragment = new ShowContentsBottomFragment(UUID);
-//                showContentsBottomFragment.setOnCategoryNameSetListener(HomeFragment.this);
-                    showContentsBottomFragment.show(getParentFragmentManager(), "DatePickerBottomSheetFragment");
-                }
-            });
-
-            timeLineAdapter.setOnCategoryChipLongClickListener(new TimeLineAdapter.OnCategoryChipLongClickListener() {
-                @Override
-                public void onCategoryChipLongClickListener(String category_UUID, String title) {
-                    ShowCategoryBottomFragment showCategoryBottomFragment = new ShowCategoryBottomFragment(category_UUID, title);
-                    showCategoryBottomFragment.show(getParentFragmentManager(), "ShowCategoryBottomFragment");
-                }
-            });
+            setOnStatusButtonClickListener();
+            setOnEdtAndMoreButtonClickListener();
+            setOnCategoryChipLongClickListener();
         }
     }
 
-    private void modifyStatus(String uuid, int status){
-        int newStatus;
+    private void showCategoryBottomSheet(String category_UUID, String title) {
+        ShowCategoryBottomFragment showCategoryBottomFragment = new ShowCategoryBottomFragment(category_UUID, title);
+        showCategoryBottomFragment.show(getParentFragmentManager(), "ShowCategoryBottomFragment");
+    }
 
-        switch(status) {
-            case 0:
-                newStatus = 1;
+    private void showContentsBottomSheet(String UUID) {
+        ShowContentsBottomFragment showContentsBottomFragment = new ShowContentsBottomFragment(UUID);
+        showContentsBottomFragment.show(getParentFragmentManager(), "DatePickerBottomSheetFragment");
+    }
+
+    private void showAddROFBottomSheet() {
+        CalendarDayDTO calendarDayDTO = calendarDayDTOS.get(old_position);
+        AddROFBottomSheetFragment addROFBottomSheetFragment = new AddROFBottomSheetFragment(calendarDayDTO.getYear(), calendarDayDTO.getMonth(), calendarDayDTO.getDayOfMonth());
+        addROFBottomSheetFragment.setOnROFListener(this);
+        addROFBottomSheetFragment.show(getParentFragmentManager(), "DatePickerBottomSheetFragment");
+    }
+
+    private void showAddCategoryBottomSheet() {
+        CategoryBottomSheetFragment categoryBottomSheetFragment = new CategoryBottomSheetFragment();
+        categoryBottomSheetFragment.show(getParentFragmentManager(), "CategoryBottomSheetFragment");
+    }
+
+    private void addROF(TimeLineEntity timeLineEntity) {
+        timeLineViewModel.insertTimeLine(timeLineEntity);
+    }
+
+    private void addCategory(CategoryEntity categoryEntity) {
+        categoryViewModel.insertCategory(categoryEntity);
+    }
+
+
+    private void selectTodayDate() {
+        for (int i = 0; i < calendarDayDTOS.size(); i++) {
+            if (calendarDayDTOS.get(i) != null && calendarDayDTOS.get(i).getDayOfMonth() == today_day
+                    && today_month + 1 == calendarDayDTOS.get(i).getMonth() && today_year == calendarDayDTOS.get(i).getYear()) {
+                calendarDayDTOS.get(i).setSelected(true);
+                old_position = i;
+            }
+        }
+    }
+
+
+    private void setCalendarAdapterClickListener() {
+        calendarAdapter.setOnItemClickListener(position -> selectDate(position));
+    }
+
+
+    private int findNotNullDayPosition(ArrayList<CalendarDayDTO> calendarDayDTOS) {
+        for (int i = 0; i < calendarDayDTOS.size(); i++) {
+            if (calendarDayDTOS.get(i) != null) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    private ArrayList<CalendarDayDTO> generateCalendarDays() {
+        ArrayList<CalendarDayDTO> days = new ArrayList<>();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int dayOfMonth = 1;
+
+        binding.tvCurrentYear.setText(String.valueOf(year));
+        binding.tvCurrentMonth.setText(String.valueOf(month + 1));
+
+        calendar.set(year, month, dayOfMonth);
+        int startDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        int numberOfWeeksInMonth = calendar.getActualMaximum(Calendar.WEEK_OF_MONTH);
+        int lastDayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        for (int i = 1; i < startDayOfWeek; i++) {
+            days.add(null);
+        }
+
+        for (int i = 1; i <= lastDayOfMonth; i++) {
+            days.add(new CalendarDayDTO(year, month + 1, i));
+        }
+
+        return days;
+    }
+
+    private void category_init(int year, int month, int day) {
+        categoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), categoryEntities -> {
+            arr_category.clear();
+            arr_category.addAll(categoryEntities);
+            observeTimelinesForCategories(year, month, day, categoryEntities);
+        });
+    }
+
+    private void observeTimelinesForCategories(int year, int month, int day, List<CategoryEntity> categoryEntities) {
+        timeLineViewModel.getAllTimelines().observe(getViewLifecycleOwner(), timeLineEntities -> {
+            arr_ROF.clear();
+
+            for (CategoryEntity categoryEntity : categoryEntities) {
+                ArrayList<TimeLineDTO> timelinesForCategory = new ArrayList<>();
+
+                for (TimeLineEntity timeLineEntity : timeLineEntities) {
+                    if (timeLineEntity.getCategory_uuid().equals(categoryEntity.getUuid())) {
+                        TimeDTO timeDTO = createTimeDTO(timeLineEntity);
+                        ContentDTO contentDTO = createContentDTO(timeLineEntity);
+
+                        TimeLineDTO timeLineDTO = new TimeLineDTO();
+                        timeLineDTO.setUUID(timeLineEntity.getUuid());
+                        timeLineDTO.setTimeDTO(timeDTO);
+                        timeLineDTO.setContentDTO(contentDTO);
+
+                        if (timeDTO.getYear() == year && timeDTO.getMonth() == month && timeDTO.getDay() == day) {
+                            timelinesForCategory.add(timeLineDTO);
+                        }
+                    }
+                }
+                if (timelinesForCategory.size() > 0) {
+                    arr_ROF.put(categoryEntity, timelinesForCategory);
+                }
+            }
+            setAdapter(arr_ROF);
+        });
+    }
+
+    private TimeDTO createTimeDTO(TimeLineEntity timeLineEntity) {
+        TimeDTO timeDTO = new TimeDTO();
+        timeDTO.setYear(timeLineEntity.getYear());
+        timeDTO.setMonth(timeLineEntity.getMonth());
+        timeDTO.setDay(timeLineEntity.getDay());
+        return timeDTO;
+    }
+
+    private ContentDTO createContentDTO(TimeLineEntity timeLineEntity) {
+        ContentDTO contentDTO = new ContentDTO();
+        contentDTO.setStatus(timeLineEntity.getStatus());
+        contentDTO.setContent(timeLineEntity.getContents());
+        contentDTO.setCategory_uuid(timeLineEntity.getCategory_uuid());
+        contentDTO.setRof_uuid(timeLineEntity.getUuid());
+        contentDTO.setAlarm(timeLineEntity.isAlarm());
+        return contentDTO;
+    }
+
+    private void setListeners() {
+        binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(requireView()).navigate(R.id.action_timeLine_to_home));
+
+        binding.btnPrev.setOnClickListener(v -> handlePrevButtonClick());
+
+        binding.btnNext.setOnClickListener(v -> handleNextButtonClick());
+
+        binding.btnAdd.setOnClickListener(v -> showAddBottomSheet());
+
+        binding.btnListMove.setOnClickListener(v -> navigateToListMoveFragment());
+    }
+
+
+    private void modifyStatus(String uuid, int status) {
+        int newStatus;
+        switch (status) {
+            case STATUS_NEW:
+                newStatus = STATUS_IN_PROGRESS;
                 break;
-            case 1:
-                newStatus = 2;
+            case STATUS_IN_PROGRESS:
+                newStatus = STATUS_COMPLETED;
                 break;
-            case 2:
-                newStatus = 0;
+            case STATUS_COMPLETED:
+                newStatus = STATUS_NEW;
                 break;
             default:
-                newStatus = status; // 예외 상황에 대한 처리
+                newStatus = status;
                 break;
         }
-
-        // 여기서 newStatus를 사용하여 DB 업데이트 작업을 수행합니다.
-        // TimeLineRepository 클래스의 메소드를 활용하여 DB 업데이트를 수행합니다.
         timeLineViewModel.updateStatusByUUID(uuid, newStatus);
     }
-
-
 
     @Override
     public void onROFDataListener(TimeLineEntity timeLineEntity) {
@@ -431,28 +387,30 @@ public class TimeLineFragment extends Fragment implements AddBottomSheetFragment
         addCategory(categoryEntity);
     }
 
-    private void addROF(TimeLineEntity timeLineEntity) {
-        timeLineViewModel.insertTimeLine(timeLineEntity);
-    }
-
-    private void addCategory(CategoryEntity categoryEntity) {
-        categoryViewModel.insertCategory(categoryEntity);
-    }
 
     @Override
     public void onAddListener(int which) {
         switch (which) {
             case 1:
-                CategoryBottomSheetFragment categoryBottomSheetFragment = new CategoryBottomSheetFragment();
-                categoryBottomSheetFragment.setOnCategoryNameSetListener(TimeLineFragment.this);
-                categoryBottomSheetFragment.show(getParentFragmentManager(), "DatePickerBottomSheetFragment");
+                showAddCategoryBottomSheet();
                 break;
             case 2:
-                CalendarDayDTO calendarDayDTO = calendarDayDTOS.get(old_position);
-                AddROFBottomSheetFragment addROFBottomSheetFragment = new AddROFBottomSheetFragment(calendarDayDTO.getYear(), calendarDayDTO.getMonth(), calendarDayDTO.getDayOfMonth());
-                addROFBottomSheetFragment.setOnROFListener(TimeLineFragment.this);
-                addROFBottomSheetFragment.show(getParentFragmentManager(), "DatePickerBottomSheetFragment");
+                showAddROFBottomSheet();
                 break;
         }
+    }
+
+    private void setShimmer() {
+        shimmerCalendarAdapter = new ShimmerCalendarAdapter();
+        binding.rvShimmer.setAdapter(shimmerCalendarAdapter);
+        binding.rvShimmer.setLayoutManager(new GridLayoutManager(getContext(), 7));
+    }
+
+    private void goneShimmer() {
+        binding.shimmerLoading.setVisibility(View.GONE);
+    }
+
+    private void visibleShimmer() {
+        binding.shimmerLoading.setVisibility(View.VISIBLE);
     }
 }

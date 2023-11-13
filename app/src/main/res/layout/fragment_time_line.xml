@@ -221,13 +221,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--        <androidx.constraintlayout.widget.Guideline-->
-<!--            android:id="@+id/gl_date_week_of_the_day_bottom"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="1dp"-->
-<!--            android:orientation="horizontal"-->
-<!--            app:layout_constraintGuide_begin="99dp" />-->
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_calendar"
             android:layout_width="0dp"
@@ -237,19 +230,21 @@
             app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
 
-        <!--        <androidx.constraintlayout.widget.Guideline-->
-        <!--            android:id="@+id/gl_calendar_hor_bottom"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="1dp"-->
-        <!--            android:orientation="horizontal"-->
-        <!--            app:layout_constraintGuide_percent="0.5" />-->
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_loading"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/rv_calendar"
+            app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
+            app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
 
-        <!--        <androidx.constraintlayout.widget.Guideline-->
-        <!--            android:id="@+id/gl_todo_hor_top"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="1dp"-->
-        <!--            android:orientation="horizontal"-->
-        <!--            app:layout_constraintGuide_percent="0.52" />-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_shimmer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout4"

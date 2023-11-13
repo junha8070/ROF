@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="false">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/mcv_status"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:chipBackgroundColor="@color/background_gray"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="5dp"
+        app:layout_constraintEnd_toEndOf="@+id/cg_day"
+        app:layout_constraintStart_toStartOf="@+id/cg_day"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeWidth="0dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/iv_status_top"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="@color/search_gray"
+                app:cardCornerRadius="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/iv_status_middle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeWidth="0dp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/iv_status_middle"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="@color/search_gray"
+                app:cardCornerRadius="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/iv_status_bottom"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/iv_status_top"
+                app:strokeWidth="0dp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/iv_status_bottom"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="@color/search_gray"
+                app:cardCornerRadius="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/iv_status_middle"
+                app:strokeWidth="0dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/cg_day"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:layout_constraintDimensionRatio="H,1:1.5"
+        android:checkable="true"
+        app:chipBackgroundColor="@color/background_gray"
+        style="@style/chip_calendar"
+        app:checkedIcon="@null"
+        android:gravity="center"
+        android:text=""
+        app:chipCornerRadius="90dp"
+        app:chipStrokeWidth="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mcv_status" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,14 +21,21 @@ public class TodayROFAdapter extends RecyclerView.Adapter<TodayROFAdapter.ViewHo
     String TAG = "TodayROFAdapter";
 
     private OnItemClickListener listener;
+    private OnItemLongClickListener longClickListener;
 
     public interface OnItemClickListener {
         void onItemClick(String uuid, int status);
     }
 
+    public interface OnItemLongClickListener {
+        void onItemLongClickListener(String uuid);
+    }
+
     public void setListener(OnItemClickListener listener) {
         this.listener = listener;
     }
+
+    public void setLongClickListener(OnItemLongClickListener listener){this.longClickListener = listener;}
 
     ArrayList<TimeLineEntity> arr_today_timeline;
 
@@ -54,15 +62,15 @@ public class TodayROFAdapter extends RecyclerView.Adapter<TodayROFAdapter.ViewHo
         switch (timeLine.getStatus()){
             case 0:
                 holder.mcv_timeline.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
-                holder.tv_status.setText("Ready");
+//                holder.tv_status.setText("Ready");
                 break;
             case 1:
                 holder.mcv_timeline.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
-                holder.tv_status.setText("On Going");
+//                holder.tv_status.setText("On Going");
                 break;
             case 2:
                 holder.mcv_timeline.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
-                holder.tv_status.setText("Finish");
+//                holder.tv_status.setText("Finish");
                 break;
             default:
                 break;
@@ -72,6 +80,14 @@ public class TodayROFAdapter extends RecyclerView.Adapter<TodayROFAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 listener.onItemClick(timeLine.getUuid(), timeLine.getStatus());
+            }
+        });
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                longClickListener.onItemLongClickListener(timeLine.getUuid());
+                return true;
             }
         });
 
@@ -98,7 +114,7 @@ public class TodayROFAdapter extends RecyclerView.Adapter<TodayROFAdapter.ViewHo
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_category = itemView.findViewById(R.id.tv_category);
             tv_memo = itemView.findViewById(R.id.tv_memo);
-            tv_status = itemView.findViewById(R.id.tv_status);
+//            tv_status = itemView.findViewById(R.id.tv_status);
         }
 
 

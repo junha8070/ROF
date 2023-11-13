@@ -79,7 +79,8 @@ public class CategoryBottomSheetFragment extends BottomSheetDialogFragment {
                             if(size!=null){
                                 position = size;
                                 CategoryEntity categoryEntity = new CategoryEntity(UUID.randomUUID().toString(), "#000000", category_name, position);
-                                mListener.onCategoryNameSet(categoryEntity);
+//                                mListener.onCategoryNameSet(categoryEntity);
+                                categoryViewModel.insertCategory(categoryEntity);
                                 dismissLoadingDialog();
                             }
                         }

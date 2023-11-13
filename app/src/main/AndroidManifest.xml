@@ -7,6 +7,7 @@
 <!--    android:name=".Ad.MyApplication"-->
 
     <application
+        android:name=".Ad.MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -20,7 +21,7 @@
         <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-3511554005210834~4212186135"/>
 
         <activity
             android:name=".MainActivity"

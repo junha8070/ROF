@@ -91,4 +91,17 @@
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/white</item>
     </style>
+
+    <style name="todayRofContentBackground">
+        <item name="android:background">@color/bottomSheetBackground_dark</item>
+    </style>
+
+    <style name="basic_background">
+        <item name="android:background">@color/black</item>
+    </style>
+
+    <style name="cardBackground">
+        <item name="cardBackgroundColor">@color/bottomSheetBackground_dark</item>
+    </style>
+
 </resources>

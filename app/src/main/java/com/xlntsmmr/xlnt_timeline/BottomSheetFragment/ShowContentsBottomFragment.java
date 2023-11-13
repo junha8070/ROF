@@ -131,7 +131,7 @@ public class ShowContentsBottomFragment extends BottomSheetDialogFragment implem
                                 if (isNightMode) {
                                     chip.setChipBackgroundColorResource(R.color.bottomSheetBackground_dark);
                                 } else {
-                                    chip.setChipBackgroundColorResource(R.color.white);
+                                    chip.setChipBackgroundColorResource(R.color.light_background);
                                 }
                                 chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                     @Override
@@ -147,7 +147,7 @@ public class ShowContentsBottomFragment extends BottomSheetDialogFragment implem
                                                 chip.setChipStrokeWidth(3);
                                                 chip.setTextColor(getResources().getColor(R.color.white, getContext().getTheme()));
                                             } else {
-                                                chip.setChipBackgroundColorResource(R.color.white);
+                                                chip.setChipBackgroundColorResource(R.color.light_background);
                                                 chip.setChipStrokeWidth(3);
                                                 chip.setTextColor(getResources().getColor(R.color.black, getContext().getTheme()));
                                             }

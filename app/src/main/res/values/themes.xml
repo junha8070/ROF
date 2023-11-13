@@ -4,8 +4,8 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
 <!--        <item name="android:statusBarColor">?attr/colorPrimary</item>-->
-        <item name="android:statusBarColor">@color/background_color_light</item>
-        <item name="android:windowBackground">@color/background_color_light</item>
+        <item name="android:statusBarColor">@color/light_background</item>
+        <item name="android:windowBackground">@color/light_background</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:textColor">@color/black</item>
         <item name="bottomSheetDialogTheme">@style/RoundCornerBottomSheetDialogTheme</item>
@@ -32,11 +32,11 @@
 
     <style name="RoundCornerModalStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/style_bottom_sheet</item>
-        <item name="backgroundTint">@color/white</item>
+        <item name="backgroundTint">@color/light_background</item>
     </style>
 
     <style name="background">
-        <item name="background">@color/white</item>
+        <item name="android:background">@color/light_background</item>
     </style>
 
     <style name="chip_calendar" parent="Widget.MaterialComponents.Chip.Filter">
@@ -112,6 +112,25 @@
 
     <style name="Theme.Xlnt_TimeLine" parent="Base.Theme.Xlnt_TimeLine" />
 
+    <style name="CollapsingToolbar.Collapsed.Title" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="CollapsingToolbar.Expanded.Title" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">32sp</item>
+    </style>
+
+    <style name="numberPickerCustomSize">
+        <item name="colorControlNormal">@color/main_orange</item>
+        <item name="android:editTextColor">@color/black</item>
+    </style>
+
+    <style name="basic_background">
+        <item name="android:background">@color/light_background</item>
+    </style>
+
     <style name="CardCorner" parent="">
         <item name="cornerSizeTopRight">25dp</item>
         <item name="cornerSizeTopLeft">25dp</item>
@@ -126,19 +145,19 @@
         <item name="cornerSizeBottomLeft">25dp</item>
     </style>
 
-    <style name="CollapsingToolbar.Collapsed.Title" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">24sp</item>
+    <style name="leftCorner" parent="">
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeTopLeft">25dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">25dp</item>
     </style>
 
-    <style name="CollapsingToolbar.Expanded.Title" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">32sp</item>
+    <style name="todayRofContentBackground">
+        <item name="android:background">@color/white</item>
     </style>
 
-    <style name="numberPickerCustomSize">
-        <item name="colorControlNormal">@color/main_orange</item>
-        <item name="android:editTextColor">@color/black</item>
+    <style name="cardBackground">
+        <item name="cardBackgroundColor">@color/light_background</item>
     </style>
 
 </resources>

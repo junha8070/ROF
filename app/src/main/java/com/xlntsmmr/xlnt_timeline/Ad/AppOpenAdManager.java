@@ -25,6 +25,10 @@ import androidx.lifecycle.ProcessLifecycleOwner;
 
 public class AppOpenAdManager extends AppOpenAd.AppOpenAdLoadCallback implements Application.ActivityLifecycleCallbacks, LifecycleObserver {
 
+    // 실패한 광고 요청 횟수 기록
+    private int failedAdRequests = 0;
+    private static final int MAX_FAILED_REQUESTS = 5; // 최대 실패 횟수 설정
+
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
             AppOpenAd.APP_OPEN_AD_ORIENTATION_LANDSCAPE})
@@ -86,7 +90,7 @@ public class AppOpenAdManager extends AppOpenAd.AppOpenAdLoadCallback implements
         }
     }
 
-    public static final String TEST_AD_UNIT_ID = "ca-app-pub-3940256099942544/3419835294";
+    public static final String TEST_AD_UNIT_ID = "ca-app-pub-3511554005210834/6030374691";
 
     public static final long MAX_AD_EXPIRY_DURATION = 3600000 * 4;
 
@@ -181,8 +185,16 @@ public class AppOpenAdManager extends AppOpenAd.AppOpenAdLoadCallback implements
 //            return;
 //        }
 
-        if (!isAdAvailable()) {
+//        if (!isAdAvailable()) {
+//            AppOpenAd.load(application, adUnitId, adRequest, orientation, this);
+//        }
+
+        long adRequestInterval = 1 * 60 * 1000; // 30분을 밀리초로 변환
+
+        if (!isAdAvailable() && failedAdRequests < MAX_FAILED_REQUESTS) {
             AppOpenAd.load(application, adUnitId, adRequest, orientation, this);
+        } else {
+            Log.e(TAG, "Ad request failed too many times. Stopping further requests.");
         }
     }
 
@@ -202,13 +214,24 @@ public class AppOpenAdManager extends AppOpenAd.AppOpenAdLoadCallback implements
         this.lastAdFetchTime = System.currentTimeMillis();
         this.ad = ad;
         ad.show(mostCurrentActivity);
+        resetFailedAdRequests();
     }
 
     @Override
     public void onAdFailedToLoad(@NonNull LoadAdError error) {
         Log.d(TAG, "Failed to load an ad: " + error.getMessage());
 
-        fetchAd();
+        failedAdRequests++;
+
+        if (failedAdRequests < MAX_FAILED_REQUESTS) {
+            fetchAd();
+        } else {
+            Log.e(TAG, "Ad request failed too many times. Stopping further requests.");
+        }
+    }
+
+    public void resetFailedAdRequests() {
+        failedAdRequests = 0;
     }
 
 

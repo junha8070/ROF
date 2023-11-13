@@ -37,19 +37,20 @@ import java.util.Map;
 
 public class StatusEntireListFragment extends Fragment {
 
-    private String TAG = "StatusEntireListFragment";
+    private static final String TAG = "StatusEntireListFragment";
 
     private FragmentStatusEntireListBinding binding;
 
     private CategoryViewModel categoryViewModel;
     private TimeLineViewModel timeLineViewModel;
 
-    ArrayList<TimeLineDTO> arr_timeLineDTOS;
-    ArrayList<CategoryEntity> arr_categoryEntities;
-    HashMap<CategoryEntity, ArrayList<TimeLineDTO>> arr_ROF;
+    // 데이터 구조 변경
+    private List<TimeLineDTO> timelineList = new ArrayList<>();
+    private List<CategoryEntity> categoryList = new ArrayList<>();
+    private Map<CategoryEntity, ArrayList<TimeLineDTO>> categoryTimelineMap = new HashMap<>();
 
     TimeLineAdapter timeLineAdapter;
-    ContentAdapter contentAdapter;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,112 +64,99 @@ public class StatusEntireListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentStatusEntireListBinding.inflate(inflater, container, false);
-        View rootView = binding.getRoot();
 
+        setListeners();
+        setupToolbar(getStatusFromArguments());
+
+        return binding.getRoot();
+    }
+
+    private int getStatusFromArguments() {
         Bundle bundle = getArguments();
-        int status = bundle.getInt("status");
+        return bundle != null ? bundle.getInt("status", -1) : -1;
+    }
 
-        binding.btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(getView()).navigate(R.id.action_statusEntireListFragment_to_homeFragment);
-            }
-        });
+    private void setupToolbar(int status) {
+        int colorResId;
+        int titleResId;
 
         switch (status) {
             case 0:
-                binding.CollapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.ready_gray));
-                binding.mcv.setCardBackgroundColor(getResources().getColor(R.color.ready_gray));
-                binding.toolbar.setTitle("Ready");
-                binding.toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+                colorResId = R.color.ready_gray;
+                titleResId = R.string.ready;
                 getStatusTimeLine(0);
                 break;
             case 1:
-                binding.CollapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.onGoing_green));
-                binding.mcv.setCardBackgroundColor(getResources().getColor(R.color.onGoing_green));
-                binding.toolbar.setTitle("On Going");
-                binding.toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+                colorResId = R.color.onGoing_green;
+                titleResId = R.string.onGoing;
                 getStatusTimeLine(1);
                 break;
             case 2:
-                binding.CollapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.finish_blue));
-                binding.mcv.setCardBackgroundColor(getResources().getColor(R.color.finish_blue));
-                binding.toolbar.setTitle("Finish");
-                binding.toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+                colorResId = R.color.finish_blue;
+                titleResId = R.string.finish;
                 getStatusTimeLine(2);
                 break;
             default:
-                break;
+                return;
         }
 
-        return rootView;
+        int color = getResources().getColor(colorResId);
+        binding.CollapsingToolbarLayout.setContentScrimColor(color);
+        binding.mcv.setCardBackgroundColor(color);
+        binding.toolbar.setTitle(getString(titleResId));
+        binding.toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+
+        getStatusTimeLine(status);
     }
+
+    private void setListeners() {
+        binding.btnClose.setOnClickListener(v ->
+                Navigation.findNavController(getView()).navigate(R.id.action_statusEntireList_to_home)
+        );
+    }
+
+    private void processTimelineEntities(int status, List<TimeLineEntity> timeLineEntities, CategoryEntity categoryEntity) {
+        for (TimeLineEntity timeLineEntity : timeLineEntities) {
+            if (timeLineEntity.getStatus() == status && categoryEntity.getUuid().equals(timeLineEntity.getCategory_uuid())) {
+                createAndAddTimelineDTO(timeLineEntity, categoryEntity);
+            }
+        }
+
+        if (!timelineList.isEmpty()) {
+            categoryTimelineMap.put(categoryEntity, new ArrayList<>(timelineList));
+            timelineList.clear();
+        }
+    }
+
 
     private void getStatusTimeLine(int status) {
-        categoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), new Observer<List<CategoryEntity>>() {
-            @Override
-            public void onChanged(List<CategoryEntity> categoryEntities) {
-                arr_timeLineDTOS = new ArrayList<>();
-                arr_ROF = new HashMap<>();
-                arr_categoryEntities = new ArrayList<>();
-                arr_categoryEntities.addAll(categoryEntities);
-                Log.d(TAG, String.valueOf(arr_categoryEntities.size()));
-                timeLineViewModel.getAllTimelines().observe(getViewLifecycleOwner(), new Observer<List<TimeLineEntity>>() {
-                    @Override
-                    public void onChanged(List<TimeLineEntity> timeLineEntities) {
-                        for (int r = 0; r < arr_categoryEntities.size(); r++) {
-                            for (int i = 0; i < timeLineEntities.size(); i++) {
-                                if (timeLineEntities.get(i).getStatus() == status) {
-                                    if (arr_categoryEntities.get(r).getUuid().equals(timeLineEntities.get(i).getCategory_uuid())) {
-
-                                        TimeLineEntity timeLine = timeLineEntities.get(i);
-
-                                        TimeDTO timeDTO = new TimeDTO();
-                                        timeDTO.setYear(timeLine.getYear());
-                                        timeDTO.setMonth(timeLine.getMonth());
-                                        timeDTO.setDay(timeLine.getDay());
-
-                                        ContentDTO contentDTO = new ContentDTO();
-                                        contentDTO.setStatus(timeLine.getStatus());
-                                        contentDTO.setContent(timeLine.getContents());
-                                        contentDTO.setCategory_uuid(timeLine.getCategory_uuid());
-                                        contentDTO.setRof_uuid(timeLine.getUuid());
-                                        contentDTO.setAlarm(timeLine.isAlarm());
-
-                                        TimeLineDTO timeLineDTO = new TimeLineDTO();
-                                        timeLineDTO.setUUID(timeLine.getUuid());
-                                        timeLineDTO.setTimeDTO(timeDTO);
-                                        timeLineDTO.setContentDTO(contentDTO);
-                                        arr_timeLineDTOS.add(timeLineDTO);
-                                    }
-                                }
-                            }
-
-                            if(arr_timeLineDTOS.size()>0){
-                                arr_ROF.put(arr_categoryEntities.get(r), arr_timeLineDTOS);
-                                arr_timeLineDTOS = new ArrayList<>();
-                            }
-                        }
-                        setAdapter();
-                    }
-                });
-            }
+        categoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), categoryEntities -> {
+            processCategories(status, categoryEntities);
         });
-
-
     }
 
-    private void setAdapter() {
 
-        List<Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>>> list = new ArrayList<>(arr_ROF.entrySet());
+    private void processCategories(int status, List<CategoryEntity> categoryEntities) {
+        categoryList = new ArrayList<>(categoryEntities);
+        Log.d(TAG, "Category list size: " + categoryList.size());
+
+        timeLineViewModel.getAllTimelines().observe(getViewLifecycleOwner(), timeLineEntities -> {
+            categoryTimelineMap = new HashMap<>();
+            timelineList = new ArrayList<>();
+
+            for (CategoryEntity categoryEntity : categoryList) {
+                processTimelineEntities(status, timeLineEntities, categoryEntity);
+            }
+            setAdapter();
+        });
+    }
+
+
+    private void setAdapter() {
+        List<Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>>> list = new ArrayList<>(categoryTimelineMap.entrySet());
 
         // Sort the list based on CategoryEntity's position
-        Collections.sort(list, new Comparator<Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>>>() {
-            @Override
-            public int compare(Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>> o1, Map.Entry<CategoryEntity, ArrayList<TimeLineDTO>> o2) {
-                return Integer.compare(o1.getKey().getPosition(), o2.getKey().getPosition());
-            }
-        });
+        Collections.sort(list, (o1, o2) -> Integer.compare(o1.getKey().getPosition(), o2.getKey().getPosition()));
 
         // Create a new sorted HashMap
         LinkedHashMap<CategoryEntity, ArrayList<TimeLineDTO>> sortedMap = new LinkedHashMap<>();
@@ -181,53 +169,56 @@ public class StatusEntireListFragment extends Fragment {
         binding.rvContents.setLayoutManager(layoutManager);
         binding.rvContents.setAdapter(timeLineAdapter);
 
-        timeLineAdapter.setOnStatusButtonClickListener(new TimeLineAdapter.OnStatusButtonClickListener() {
-            @Override
-            public void onStatusButtonClick(String uuid, int status) {
-                Log.d(TAG, "uuid: " + uuid);
-                Log.d(TAG, "status: " + status);
-                modifyStatus(uuid, status);
-            }
+        timeLineAdapter.setOnStatusButtonClickListener((uuid, status) -> {
+            Log.d(TAG, "uuid: " + uuid);
+            Log.d(TAG, "status: " + status);
+            modifyStatus(uuid, status);
         });
 
-        timeLineAdapter.setOnEdtAndMoreButtonClickListener(new ContentAdapter.OnEdtAndMoreButtonClickListener() {
-            @Override
-            public void onEdtAndMoreButtonClickListener(String UUID) {
-                ShowContentsBottomFragment showContentsBottomFragment = new ShowContentsBottomFragment(UUID);
-//                showContentsBottomFragment.setOnCategoryNameSetListener(HomeFragment.this);
-                showContentsBottomFragment.show(getParentFragmentManager(), "DatePickerBottomSheetFragment");
-            }
+        timeLineAdapter.setOnEdtAndMoreButtonClickListener(UUID -> {
+            ShowContentsBottomFragment showContentsBottomFragment = new ShowContentsBottomFragment(UUID);
+            showContentsBottomFragment.show(getParentFragmentManager(), "DatePickerBottomSheetFragment");
         });
 
-        timeLineAdapter.setOnCategoryChipLongClickListener(new TimeLineAdapter.OnCategoryChipLongClickListener() {
-            @Override
-            public void onCategoryChipLongClickListener(String category_UUID, String title) {
-                ShowCategoryBottomFragment showCategoryBottomFragment = new ShowCategoryBottomFragment(category_UUID, title);
-                showCategoryBottomFragment.show(getParentFragmentManager(), "ShowCategoryBottomFragment");
-            }
+        timeLineAdapter.setOnCategoryChipLongClickListener((category_UUID, title) -> {
+            ShowCategoryBottomFragment showCategoryBottomFragment = new ShowCategoryBottomFragment(category_UUID, title);
+            showCategoryBottomFragment.show(getParentFragmentManager(), "ShowCategoryBottomFragment");
         });
     }
 
-    private void modifyStatus(String uuid, int status){
-        int newStatus;
 
-        switch(status) {
-            case 0:
-                newStatus = 1;
-                break;
-            case 1:
-                newStatus = 2;
-                break;
-            case 2:
-                newStatus = 0;
-                break;
-            default:
-                newStatus = status; // 예외 상황에 대한 처리
-                break;
-        }
-
-        // 여기서 newStatus를 사용하여 DB 업데이트 작업을 수행합니다.
-        // TimeLineRepository 클래스의 메소드를 활용하여 DB 업데이트를 수행합니다.
+    private void modifyStatus(String uuid, int status) {
+        int newStatus = (status + 1) % 3;
         timeLineViewModel.updateStatusByUUID(uuid, newStatus);
+    }
+
+    private void createAndAddTimelineDTO(TimeLineEntity timeLineEntity, CategoryEntity categoryEntity) {
+        // Use timeLineEntity directly instead of fetching it again from the list
+        TimeDTO timeDTO = createTimeDTO(timeLineEntity);
+        ContentDTO contentDTO = createContentDTO(timeLineEntity);
+
+        TimeLineDTO timeLineDTO = new TimeLineDTO();
+        timeLineDTO.setUUID(timeLineEntity.getUuid());
+        timeLineDTO.setTimeDTO(timeDTO);
+        timeLineDTO.setContentDTO(contentDTO);
+        timelineList.add(timeLineDTO);
+    }
+
+    private TimeDTO createTimeDTO(TimeLineEntity timeLineEntity) {
+        TimeDTO timeDTO = new TimeDTO();
+        timeDTO.setYear(timeLineEntity.getYear());
+        timeDTO.setMonth(timeLineEntity.getMonth());
+        timeDTO.setDay(timeLineEntity.getDay());
+        return timeDTO;
+    }
+
+    private ContentDTO createContentDTO(TimeLineEntity timeLineEntity) {
+        ContentDTO contentDTO = new ContentDTO();
+        contentDTO.setStatus(timeLineEntity.getStatus());
+        contentDTO.setContent(timeLineEntity.getContents());
+        contentDTO.setCategory_uuid(timeLineEntity.getCategory_uuid());
+        contentDTO.setRof_uuid(timeLineEntity.getUuid());
+        contentDTO.setAlarm(timeLineEntity.isAlarm());
+        return contentDTO;
     }
 }

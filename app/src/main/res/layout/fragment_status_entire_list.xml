@@ -9,17 +9,17 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFFFF"
+        style="@style/basic_background"
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/CollapsingToolbarLayout"
             android:layout_width="match_parent"
+            style="@style/basic_background"
             app:collapsedTitleTextAppearance="@style/CollapsingToolbar.Collapsed.Title"
             app:expandedTitleTextAppearance="@style/CollapsingToolbar.Expanded.Title"
             android:layout_height="wrap_content"
             app:collapsedTitleTextColor="@color/white"
-            android:background="#FFFFFFFF"
             app:expandedTitleTextColor="@color/white"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -30,7 +30,6 @@
                 app:shapeAppearance="@style/BottomCorner"
                 android:adjustViewBounds="true"
                 app:strokeWidth="0dp"
-                android:background="#FFFFFFFF"
                 app:layout_collapseMode="parallax" />
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -55,39 +54,13 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_marginTop="10dp"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_contents"
         android:layout_width="match_parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/gl_entire_ver_left"
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.05" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/gl_entire_ver_right"
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.95" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_contents"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
-            app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

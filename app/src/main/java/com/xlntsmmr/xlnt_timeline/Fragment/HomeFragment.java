@@ -1,132 +1,138 @@
 package com.xlntsmmr.xlnt_timeline.Fragment;
 
+import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import androidx.core.view.GravityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.xlntsmmr.xlnt_timeline.Adapter.TodayROFAdapter;
 import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.AddBottomSheetFragment;
 import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.AddROFBottomSheetFragment;
 import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.CategoryBottomSheetFragment;
 import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.InfoBottomSheetFragment;
+import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.ShowContentsBottomFragment;
 import com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity;
 import com.xlntsmmr.xlnt_timeline.Entity.TimeLineEntity;
 import com.xlntsmmr.xlnt_timeline.ItemSpacingDecoration;
 import com.xlntsmmr.xlnt_timeline.R;
-import com.xlntsmmr.xlnt_timeline.Repository.RemoteConfigRepository;
-import com.xlntsmmr.xlnt_timeline.ViewModel.ConfigViewModel;
-import com.xlntsmmr.xlnt_timeline.databinding.FragmentHomeBinding;
 import com.xlntsmmr.xlnt_timeline.ViewModel.CategoryViewModel;
+import com.xlntsmmr.xlnt_timeline.ViewModel.ConfigViewModel;
 import com.xlntsmmr.xlnt_timeline.ViewModel.TimeLineViewModel;
+import com.xlntsmmr.xlnt_timeline.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.IntStream;
 
 public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnAddListener, CategoryBottomSheetFragment.OnCategoryNameSetListener, AddROFBottomSheetFragment.OnROFDataListener {
 
-    String TAG = "HomeFragment";
+    private String tag = "HomeFragment";
+
+    private static final int STATUS_READY = 0;
+    private static final int STATUS_ONGOING = 1;
+    private static final int STATUS_FINISH = 2;
 
     private FragmentHomeBinding binding;
 
-    private ConfigViewModel configViewModel;
 
+    private ConfigViewModel configViewModel;
     private CategoryViewModel categoryViewModel;
     private TimeLineViewModel timeLineViewModel;
+
+
     private ArrayList<TimeLineEntity> arr_timelines;
+    private ArrayList<TimeLineEntity> today_timeline;
+
 
     private Calendar calendar;
-
-    TodayROFAdapter todayROFAdapter;
-    ArrayList<TimeLineEntity> today_timeline;
+    private TodayROFAdapter todayROFAdapter;
     private Date now;
 
-    int ready_count = 0;
-    int onGoing_count = 0;
-    int finish_count = 0;
 
-    int prev_timeLineEntities_size = 0;
+    private int ready_count = 0;
+    private int onGoing_count = 0;
+    private int finish_count = 0;
+    private int prev_timeLineEntities_size = 0;
+    private String currentVersion;
 
-    String currentVersion;
 
     enum Status {
         READY, ONGOING, FINISH
     }
 
+    private Status getStatusEnum(int status) {
+        switch (status) {
+            case STATUS_READY:
+                return Status.READY;
+            case STATUS_ONGOING:
+                return Status.ONGOING;
+            case STATUS_FINISH:
+                return Status.FINISH;
+            default:
+                throw new IllegalArgumentException("Invalid status: " + status);
+        }
+    }
+
+    private void updateStatusCount(Status status) {
+        switch (status) {
+            case READY:
+                ready_count++;
+                break;
+            case ONGOING:
+                onGoing_count++;
+                break;
+            case FINISH:
+                finish_count++;
+                break;
+        }
+    }
+
+    private void updateUIWithCounts(int totalSize) {
+        binding.tvCount.setText(String.valueOf(totalSize));
+        binding.tvReady.setText(String.valueOf(ready_count));
+        binding.tvOnGing.setText(String.valueOf(onGoing_count));
+        binding.tvFinish.setText(String.valueOf(finish_count));
+    }
+
+    private void initTodayROFAdapter() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        binding.rvTodayRof.setLayoutManager(new GridLayoutManager(getContext(), 1));
+
+        todayROFAdapter = new TodayROFAdapter(today_timeline);
+        binding.rvTodayRof.setAdapter(todayROFAdapter);
+    }
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        categoryViewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
-        timeLineViewModel = new ViewModelProvider(this).get(TimeLineViewModel.class);
-        configViewModel = new ViewModelProvider(this).get(ConfigViewModel.class);
-
-        // Remote Config 값을 가져옵니다.
+        initializeViewModels();
         configViewModel.fetchRemoteConfig();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
 
-        PackageInfo pi = null;
-        try {
-            pi = requireActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        currentVersion = pi.versionName;
-
-        configViewModel.getIsRemoteConfigLoadFinish().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean isRemoteConfigLoadFinish) {
-                if(isRemoteConfigLoadFinish){
-                    if(!configViewModel.getLatestVersion().equals(currentVersion)){
-                        if(configViewModel.getForceUpdate()){
-                            boolean forceUpdate = configViewModel.getForceUpdate();
-                            String latestVersion = configViewModel.getLatestVersion();
-                            String minVersion = configViewModel.getMinVersion();
-                            String updateNewsJson = configViewModel.getUpdateNewsJson();
-                            String jsonLatestVersion = configViewModel.getJsonLatestVersion();
-                            String jsonUpdateNews = configViewModel.getJsonUpdateNews();
-                            String jsonNewFunction = configViewModel.getJsonNewFunction();
-
-                            InfoBottomSheetFragment infoBottomSheetFragment = new InfoBottomSheetFragment(
-                                    currentVersion, forceUpdate, latestVersion, minVersion, jsonLatestVersion, jsonUpdateNews, jsonNewFunction);
-
-                            infoBottomSheetFragment.setCancelable(false);
-
-                            Log.d(TAG, "forceUpdate : "+forceUpdate);
-                            Log.d(TAG, "latestVersion : "+latestVersion);
-                            Log.d(TAG, "minVersion : "+minVersion);
-                            Log.d(TAG, "jsonLatestVersion : "+jsonLatestVersion);
-                            Log.d(TAG, "jsonUpdateNews : "+jsonUpdateNews);
-                            Log.d(TAG, "jsonNewFunction : "+jsonNewFunction);
-
-                            infoBottomSheetFragment.show(getParentFragmentManager(), "InfoBottomSheetFragment");
-                        }
-                    }
-                }
-            }
-        });
+        currentVersion = getVersionName(requireActivity());
+        checkAndUpdateInfoBottomSheet();
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
@@ -138,243 +144,55 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
 
         timeLineViewModel.getAllTimelines().observe(getViewLifecycleOwner(), this::onTimelinesChanged);
 
-        binding.rvTodayRof.addItemDecoration(new ItemSpacingDecoration(0, 10, 0, 0));
+        initTodayROFAdapter();
 
-        binding.btnAddTimeline.setOnClickListener(v -> {
-            AddBottomSheetFragment addBottomSheetFragment = new AddBottomSheetFragment();
-            addBottomSheetFragment.setOnAddListener(HomeFragment.this);
-            addBottomSheetFragment.show(getParentFragmentManager(), "DatePickerBottomSheetFragment");
-        });
+        binding.rvTodayRof.addItemDecoration(new ItemSpacingDecoration(5, 5, 0, 10));
 
-        binding.btnTimeline.setOnClickListener(v -> {
-            Navigation.findNavController(requireView()).navigate(R.id.action_homeFragment_to_timeLineFragment);
-        });
-
-        binding.mcvReady.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("status", 0);
-                Navigation.findNavController(requireView()).navigate(R.id.action_homeFragment_to_statusEntireListFragment, bundle);
-            }
-        });
-
-        binding.mcvOnGoing.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("status", 1);
-                Navigation.findNavController(requireView()).navigate(R.id.action_homeFragment_to_statusEntireListFragment, bundle);
-            }
-        });
-
-        binding.mcvFinish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("status", 2);
-                Navigation.findNavController(requireView()).navigate(R.id.action_homeFragment_to_statusEntireListFragment, bundle);
-            }
-        });
-
-        // rvTodayRof를 초기화하고 설정
-        if (todayROFAdapter != null) {
-            setupTodayROFAdapter();
-        }
-
-
-        binding.btnInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                configViewModel.getIsRemoteConfigLoadFinish().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-                    @Override
-                    public void onChanged(Boolean isRemoteConfigLoadFinish) {
-                        if(isRemoteConfigLoadFinish){
-                            try {
-                                PackageInfo pi = requireActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
-                                String currentVersion = pi.versionName;
-                                boolean forceUpdate = configViewModel.getForceUpdate();
-                                String latestVersion = configViewModel.getLatestVersion();
-                                String minVersion = configViewModel.getMinVersion();
-                                String updateNewsJson = configViewModel.getUpdateNewsJson();
-                                String jsonLatestVersion = configViewModel.getJsonLatestVersion();
-                                String jsonUpdateNews = configViewModel.getJsonUpdateNews();
-                                String jsonNewFunction = configViewModel.getJsonNewFunction();
-
-                                InfoBottomSheetFragment infoBottomSheetFragment = new InfoBottomSheetFragment(
-                                        currentVersion, forceUpdate, latestVersion, minVersion, jsonLatestVersion, jsonUpdateNews, jsonNewFunction);
-
-                                Log.d(TAG, "forceUpdate : "+forceUpdate);
-                                Log.d(TAG, "latestVersion : "+latestVersion);
-                                Log.d(TAG, "minVersion : "+minVersion);
-                                Log.d(TAG, "jsonLatestVersion : "+jsonLatestVersion);
-                                Log.d(TAG, "jsonUpdateNews : "+jsonUpdateNews);
-                                Log.d(TAG, "jsonNewFunction : "+jsonNewFunction);
-
-                                infoBottomSheetFragment.show(getParentFragmentManager(), "InfoBottomSheetFragment");
-                            } catch (PackageManager.NameNotFoundException e) {
-                                Toast.makeText(getContext(), "오류가 발생하였습니다.", Toast.LENGTH_SHORT).show();
-                                throw new RuntimeException(e);
-                            }
-                        }else{
-                            try {
-                                PackageInfo pi = requireActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
-                                String currentVersion = pi.versionName;
-                                boolean forceUpdate = false;
-                                String latestVersion = "버전 확인 중";
-                                String minVersion = "버전 확인 중";
-                                String updateNewsJson = "버전 확인 중";
-                                String jsonLatestVersion = "버전 확인 중";
-                                String jsonUpdateNews = "버전 확인 중";
-                                String jsonNewFunction = "버전 확인 중";
-
-                                InfoBottomSheetFragment infoBottomSheetFragment = new InfoBottomSheetFragment(
-                                        currentVersion, forceUpdate, latestVersion, minVersion, jsonLatestVersion, jsonUpdateNews, jsonNewFunction);
-
-                                Log.d(TAG, "forceUpdate : "+forceUpdate);
-                                Log.d(TAG, "latestVersion : "+latestVersion);
-                                Log.d(TAG, "minVersion : "+minVersion);
-                                Log.d(TAG, "jsonLatestVersion : "+jsonLatestVersion);
-                                Log.d(TAG, "jsonUpdateNews : "+jsonUpdateNews);
-                                Log.d(TAG, "jsonNewFunction : "+jsonNewFunction);
-
-                                infoBottomSheetFragment.show(getParentFragmentManager(), "InfoBottomSheetFragment");
-                            } catch (PackageManager.NameNotFoundException e) {
-                                Toast.makeText(getContext(), "오류가 발생하였습니다.", Toast.LENGTH_SHORT).show();
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }
-                });
-
-
-
-
-
-//                Bundle bundle = new Bundle();
-//                bundle.putBoolean("forceUpdate",forceUpdate);
-//                bundle.putString("latestVersion",latestVersion);
-//                bundle.putString("minVersion",minVersion);
-//                bundle.putString("jsonLatestVersion",jsonLatestVersion);
-//                bundle.putString("jsonUpdateNews",jsonUpdateNews);
-//                bundle.putString("jsonNewFunction",jsonNewFunction);
-
-
-
-//                InfoBottomSheetFragment infoBottomSheetFragment = new InfoBottomSheetFragment();
-
-            }
-        });
-
-//        binding.toolbar.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                throw new RuntimeException("Test Crash"); // Force a crash
-//            }
-//        });
-
-//        AdBottomSheetFragment adBottomSheetFragment = new AdBottomSheetFragment();
-//        adBottomSheetFragment.show(getParentFragmentManager(), "DatePickerBottomSheetFragment");
+        setClickListeners();
 
         return rootView;
     }
 
-    private void onTimelinesChanged(List<TimeLineEntity> timeLineEntities) {
+    private void updateCountsAndLists(List<TimeLineEntity> timeLineEntities) {
         ready_count = 0;
         onGoing_count = 0;
         finish_count = 0;
         arr_timelines.clear();
         today_timeline.clear();
-        if(prev_timeLineEntities_size<timeLineEntities.size()){
+
+        if (prev_timeLineEntities_size < timeLineEntities.size()) {
             todayROFAdapter = null;
         }
         prev_timeLineEntities_size = timeLineEntities.size();
 
-        if(timeLineEntities.size()==0){
-            binding.tvNothing.setVisibility(View.VISIBLE);
-        }else if(timeLineEntities.size()>0){
-            binding.tvNothing.setVisibility(View.INVISIBLE);
+        Log.d(tag, "timeLineEntities.size(): " + timeLineEntities.size());
+
+        if (!timeLineEntities.isEmpty()) {
             for (TimeLineEntity timeline : timeLineEntities) {
                 Status status = getStatusEnum(timeline.getStatus());
-//            countStatus(status);
-
-                switch (status) {
-                    case READY:
-                        ready_count++;
-                        break;
-                    case ONGOING:
-                        onGoing_count++;
-                        break;
-                    case FINISH:
-                        finish_count++;
-                        break;
-                }
-                binding.tvReady.setText(String.valueOf(ready_count));
-                binding.tvOnGing.setText(String.valueOf(onGoing_count));
-                binding.tvFinish.setText(String.valueOf(finish_count));
+                updateStatusCount(status);
 
                 if (isToday(timeline)) {
                     today_timeline.add(timeline);
                 }
             }
 
-
-            updateStatusUI(timeLineEntities.size());
-
-            if (todayROFAdapter != null) {
-                todayROFAdapter.setListener((uuid, status) -> {
-                    int newStatus;
-                    switch (status) {
-                        case 0:
-                            newStatus = 1;
-                            break;
-                        case 1:
-                            newStatus = 2;
-                            break;
-                        case 2:
-                            newStatus = 0;
-                            break;
-                        default:
-                            newStatus = status; // Handle exception situation
-                            break;
-                    }
-
-                    int position = findPositionByUUID(uuid);
-                    if (position >= 0) {
-                        todayROFAdapter.updateStatus(position, newStatus);
-                        timeLineViewModel.updateStatusByUUID(uuid, newStatus);
-                    }
-                });
-            }else{
-                setupTodayROFAdapter();
-            }
+            updateUIWithCounts(timeLineEntities.size());
+            setupOrUpdateTodayROFAdapter();
         }
     }
 
-    private Status getStatusEnum(int status) {
-        switch (status) {
-            case 0:
-                return Status.READY;
-            case 1:
-                return Status.ONGOING;
-            case 2:
-                return Status.FINISH;
-            default:
-                throw new IllegalArgumentException("Invalid status: " + status);
+    private void setupOrUpdateTodayROFAdapter() {
+        Log.d(tag, "setupOrUpdateTodayROFAdapter");
+        Log.d(tag, "setupOrUpdateTodayROFAdapter : " + today_timeline.size());
+
+        if (todayROFAdapter == null) {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+            binding.rvTodayRof.setLayoutManager(new GridLayoutManager(getContext(), 1));
+
+            todayROFAdapter = new TodayROFAdapter(today_timeline);
+            binding.rvTodayRof.setAdapter(todayROFAdapter);
         }
-    }
-
-    private void updateStatusUI(int size) {
-        binding.tvCount.setText(String.valueOf(size));
-    }
-
-    private void setupTodayROFAdapter() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        binding.rvTodayRof.setLayoutManager(layoutManager);
-
-        todayROFAdapter = new TodayROFAdapter(today_timeline);
-        binding.rvTodayRof.setAdapter(todayROFAdapter);
 
         todayROFAdapter.setListener((uuid, status) -> {
             int newStatus;
@@ -399,16 +217,26 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
                 timeLineViewModel.updateStatusByUUID(uuid, newStatus);
             }
         });
+
+        todayROFAdapter.setLongClickListener(uuid -> {
+            showContentsBottomFragment(uuid);
+            todayROFAdapter = null;
+        });
     }
 
-    private int findPositionByUUID(String uuid) {
-        for (int i = 0; i < today_timeline.size(); i++) {
-            if (today_timeline.get(i).getUuid().equals(uuid)) {
-                return i;
-            }
-        }
-        return -1;
+    private void onTimelinesChanged(List<TimeLineEntity> timeLineEntities) {
+        updateCountsAndLists(timeLineEntities);
+        Log.d("HomeFragment", "사이즈: "+timeLineEntities.size());
     }
+
+
+    private int findPositionByUUID(String uuid) {
+        return IntStream.range(0, today_timeline.size())
+                .filter(i -> today_timeline.get(i).getUuid().equals(uuid))
+                .findFirst()
+                .orElse(-1);
+    }
+
 
     private boolean isToday(TimeLineEntity timeline) {
         return calendar.get(Calendar.YEAR) == timeline.getYear() &&
@@ -432,6 +260,11 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
         }
     }
 
+    public void showContentsBottomFragment(String uuid){
+        ShowContentsBottomFragment showContentsBottomFragment = new ShowContentsBottomFragment(uuid);
+        showContentsBottomFragment.show(getParentFragmentManager(), "ShowContentsBottomFragment");
+    }
+
     @Override
     public void onROFDataListener(TimeLineEntity timeLineEntity) {
         addROF(timeLineEntity);
@@ -450,30 +283,109 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
         categoryViewModel.insertCategory(categoryEntity);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG, "onPause");
+    // 버전 코드를 가져오는 함수 정의
+    private String getVersionName(Context context) {
+        try {
+            PackageInfo pi = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return pi.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume");
+    private void initializeViewModels() {
+        ViewModelProvider viewModelProvider = new ViewModelProvider(this);
+        categoryViewModel = viewModelProvider.get(CategoryViewModel.class);
+        timeLineViewModel = viewModelProvider.get(TimeLineViewModel.class);
+        configViewModel = viewModelProvider.get(ConfigViewModel.class);
+    }
+
+
+    private void setClickListeners() {
+        binding.btnAddTimeline.setOnClickListener(v -> {
+            AddBottomSheetFragment addBottomSheetFragment = new AddBottomSheetFragment();
+            addBottomSheetFragment.setOnAddListener(HomeFragment.this);
+            addBottomSheetFragment.show(getParentFragmentManager(), "DatePickerBottomSheetFragment");
+        });
+
+        binding.btnTimeline.setOnClickListener(v -> Navigation.findNavController(requireView()).navigate(R.id.action_home_to_timeLine));
+
+        setNavigationClickListener(binding.mcvReady, 0);
+        setNavigationClickListener(binding.mcvOnGoing, 1);
+        setNavigationClickListener(binding.mcvFinish, 2);
+
+        binding.btnInfo.setOnClickListener(v -> showInfoBottomSheet());
+
+        binding.btnListMove.setOnClickListener(v -> navigateToListMoveDialog());
+    }
+
+    private void setNavigationClickListener(View view, int status) {
+        view.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("status", status);
+            Navigation.findNavController(requireView()).navigate(R.id.action_home_to_statusEntireList, bundle);
+        });
+    }
+
+    private void navigateToListMoveDialog() {
+        categoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), categoryEntities -> {
+            if (categoryEntities != null) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("category_list", new ArrayList<>(categoryEntities));
+                bundle.putString("navigate", "home");
+                Navigation.findNavController(requireView()).navigate(R.id.action_home_to_listMoveDialog, bundle);
+            }
+        });
+    }
+
+    // showInfoBottomSheet() 메서드 수정
+    private void showInfoBottomSheet() {
+        currentVersion = getVersionName(requireActivity());
+        boolean isRemoteConfigLoadFinish = Boolean.TRUE.equals(configViewModel.getIsRemoteConfigLoadFinish().getValue());
+        boolean forceUpdate = configViewModel.getForceUpdate();
+
+        String latestVersion = isRemoteConfigLoadFinish ? configViewModel.getLatestVersion() : "버전 확인 중";
+        String minVersion = isRemoteConfigLoadFinish ? configViewModel.getMinVersion() : "버전 확인 중";
+        String updateNewsJson = isRemoteConfigLoadFinish ? configViewModel.getUpdateNewsJson() : "버전 확인 중";
+        String jsonLatestVersion = isRemoteConfigLoadFinish ? configViewModel.getJsonLatestVersion() : "버전 확인 중";
+        String jsonUpdateNews = isRemoteConfigLoadFinish ? configViewModel.getJsonUpdateNews() : "버전 확인 중";
+        String jsonNewFunction = isRemoteConfigLoadFinish ? configViewModel.getJsonNewFunction() : "버전 확인 중";
+
+        InfoBottomSheetFragment infoBottomSheetFragment = new InfoBottomSheetFragment(
+                currentVersion, forceUpdate, latestVersion, minVersion, jsonLatestVersion, jsonUpdateNews, jsonNewFunction);
+
+        // forceUpdate가 true일 때 setCancelable(false) 적용
+        if (forceUpdate && !latestVersion.equals(currentVersion)) {
+            infoBottomSheetFragment.setCancelable(false);
+        }
+
+        infoBottomSheetFragment.show(getParentFragmentManager(), "InfoBottomSheetFragment");
+    }
+
+    // checkAndUpdateInfoBottomSheet() 메서드 수정
+    private void checkAndUpdateInfoBottomSheet() {
+        configViewModel.getIsRemoteConfigLoadFinish().observe(getViewLifecycleOwner(), isRemoteConfigLoadFinish -> {
+            // Check the condition to show the InfoBottomSheetFragment
+            boolean shouldShowInfoBottomSheet = isRemoteConfigLoadFinish &&
+                    (configViewModel.getForceUpdate() && !configViewModel.getLatestVersion().equals(currentVersion));
+
+            if (shouldShowInfoBottomSheet) {
+                // If the condition is true, show the InfoBottomSheetFragment
+                showInfoBottomSheet();
+            } else {
+                // Condition not met, do not show the InfoBottomSheetFragment
+            }
+        });
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-//        Log.d(TAG, "onDestroyView");
+//        timeLineViewModel.getAllTimelines().removeObservers(this);
+//        categoryViewModel.getAllCategories().removeObservers(this);
+//        categoryViewModel = null;
+//        timeLineViewModel = null;
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy");
-    }
-
 
 
 }
