@@ -27,7 +27,7 @@ public class AppOpenAdManager extends AppOpenAd.AppOpenAdLoadCallback implements
 
     // 실패한 광고 요청 횟수 기록
     private int failedAdRequests = 0;
-    private static final int MAX_FAILED_REQUESTS = 5; // 최대 실패 횟수 설정
+    private static final int MAX_FAILED_REQUESTS = 3; // 최대 실패 횟수 설정
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,

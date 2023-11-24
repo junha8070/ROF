@@ -1,5 +1,6 @@
 package com.xlntsmmr.xlnt_timeline.Fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,12 +12,15 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.xlntsmmr.xlnt_timeline.Adapter.CategoryListMoveAdapter;
+import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.ShowCategoryBottomFragment;
 import com.xlntsmmr.xlnt_timeline.DialogFragmet.LoadingDialogFragment;
 import com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity;
 import com.xlntsmmr.xlnt_timeline.ItemMoveCallback;
@@ -27,6 +31,7 @@ import com.xlntsmmr.xlnt_timeline.databinding.FragmentListMoveDialogBinding;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 public class ListMoveFragment extends Fragment {
 
@@ -54,53 +59,119 @@ public class ListMoveFragment extends Fragment {
         binding = FragmentListMoveDialogBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
 
-        arr_category = getArguments().getParcelableArrayList("category_list");
+        arr_category = new ArrayList<>();
+        arr_change_category = new ArrayList<>();
         navigate = getArguments().getString("navigate");
+        navigate();
 
-        if (arr_category != null) {
-            initializeUI();
-        } else {
-            Toast.makeText(getContext(), R.string.listMoveFragmentError, Toast.LENGTH_SHORT).show();
-            navigateToDestination();
-        }
+        binding.btnListMove.setChecked(true); // btnListMove를 선택 상태로 초기화
 
+        categoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), new Observer<List<CategoryEntity>>() {
+            @Override
+            public void onChanged(List<CategoryEntity> categoryEntities) {
+                if (categoryEntities != null) {
+                    arr_category.clear();
+                    arr_category.addAll(categoryEntities);
+                    arr_category.sort(Comparator.comparingInt(CategoryEntity::getPosition));
+                    adapter = new CategoryListMoveAdapter(arr_category);
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+                    binding.rvCategory.setLayoutManager(layoutManager);
+                    binding.rvCategory.setAdapter(adapter);
+                    initializeUI(); // 이 부분을 호출하여 초기 UI 설정
+                }
+            }
+        });
         return rootView;
     }
 
     private void initializeUI() {
-        arr_change_category = new ArrayList<>(arr_category);
-        arr_category.sort(Comparator.comparingInt(CategoryEntity::getPosition));
-
-        adapter = new CategoryListMoveAdapter(arr_category);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        binding.rvCategory.setLayoutManager(layoutManager);
-        binding.rvCategory.setAdapter(adapter);
-        dismissLoadingDialog();
-
-        setupItemTouchHelper();
-
-        adapter.setOnItemChangeListener(new CategoryListMoveAdapter.OnItemChangeListener() {
+        binding.btnListMove.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void setPosition(ArrayList<CategoryEntity> change_position_arr_category) {
-                arr_change_category.clear();
-                arr_change_category.addAll(change_position_arr_category);
+            public void onClick(View v) {
+                touchHelper.attachToRecyclerView(null);
+                binding.btnListMove.setChecked(true);
+                touchHelper = new ItemTouchHelper(new ItemMoveCallback(adapter));
+                touchHelper.attachToRecyclerView(binding.rvCategory);
+                adapter.setOnItemChangeListener(new CategoryListMoveAdapter.OnItemChangeListener() {
+                    @Override
+                    public void setPosition(ArrayList<CategoryEntity> change_position_arr_category) {
+                        Log.d(TAG, "binding.btnListMove.setOnClickListener Listener");
+                        arr_change_category.clear();
+                        arr_change_category.addAll(change_position_arr_category);
+                    }
+                });
+
+                // 리사이클러뷰 아이템 클릭 리스너 제거
+                adapter.setOnItemClickListener(null);
             }
         });
 
-        setupBackPressedCallback();
+        binding.btnListEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.btnListEdit.setChecked(true);
+                if(binding.btnListEdit.isChecked()){
+                    updateListPosition(arr_change_category);
+                }
+                adapter.setOnItemClickListener(new CategoryListMoveAdapter.OnItemClickListener() {
+                    @Override
+                    public void clickListener(String CategoryUUID, String title) {
+                        Log.d(TAG, "binding.btnListEdit.setOnClickListener Listener");
+                        // 아이템 클릭 시 ShowCategoryBottomFragment를 띄워서 수정할 수 있도록 처리
+                        ShowCategoryBottomFragment showCategoryBottomFragment = new ShowCategoryBottomFragment("ListMove", CategoryUUID, title);
+                        showCategoryBottomFragment.show(getParentFragmentManager(), "ShowCategoryBottomFragment");
+                    }
+                });
 
+                // ItemTouchHelper 해제
+                touchHelper.attachToRecyclerView(null);
+            }
+        });
+
+        if (binding.btnListMove.isChecked()) {
+            if(touchHelper==null){
+                touchHelper = new ItemTouchHelper(new ItemMoveCallback(adapter));
+                touchHelper.attachToRecyclerView(binding.rvCategory);
+            }
+            adapter.setOnItemChangeListener(new CategoryListMoveAdapter.OnItemChangeListener() {
+                @Override
+                public void setPosition(ArrayList<CategoryEntity> change_position_arr_category) {
+                    Log.d(TAG, "if (binding.btnListMove.isChecked()) Listener");
+                    arr_change_category.clear();
+                    arr_change_category.addAll(change_position_arr_category);
+                }
+            });
+
+            // 리사이클러뷰 아이템 클릭 리스너 제거
+            adapter.setOnItemClickListener(null);
+        }
+
+        if(binding.btnListEdit.isChecked()){
+            adapter.setOnItemClickListener(new CategoryListMoveAdapter.OnItemClickListener() {
+                @Override
+                public void clickListener(String CategoryUUID, String title) {
+                    Log.d(TAG, "if(binding.btnListEdit.isChecked()) Listener");
+                    // 아이템 클릭 시 ShowCategoryBottomFragment를 띄워서 수정할 수 있도록 처리
+                    ShowCategoryBottomFragment showCategoryBottomFragment = new ShowCategoryBottomFragment("ListMove", CategoryUUID, title);
+                    showCategoryBottomFragment.show(getParentFragmentManager(), "ShowCategoryBottomFragment");
+                }
+            });
+
+            // ItemTouchHelper 해제
+            touchHelper.attachToRecyclerView(null);
+        }
+    }
+
+
+    private void navigate() {
+        setupBackPressedCallback();
         binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateListPosition(arr_change_category);
+                navigateToDestination();
             }
         });
-    }
-
-    private void setupItemTouchHelper() {
-        ItemMoveCallback itemMoveCallback = new ItemMoveCallback(adapter);
-        touchHelper = new ItemTouchHelper(itemMoveCallback);
-        touchHelper.attachToRecyclerView(binding.rvCategory);
     }
 
     private void setupBackPressedCallback() {
@@ -108,6 +179,7 @@ public class ListMoveFragment extends Fragment {
             @Override
             public void handleOnBackPressed() {
                 updateListPosition(arr_change_category);
+                navigateToDestination();
             }
         });
     }
@@ -118,8 +190,6 @@ public class ListMoveFragment extends Fragment {
         }
 
         categoryViewModel.updateCategoryPositions(change_position_arr_category);
-
-        navigateToDestination();
     }
 
     private void navigateToDestination() {

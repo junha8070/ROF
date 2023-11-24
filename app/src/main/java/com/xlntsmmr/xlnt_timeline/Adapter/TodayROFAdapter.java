@@ -15,6 +15,7 @@ import com.xlntsmmr.xlnt_timeline.R;
 import com.xlntsmmr.xlnt_timeline.Entity.TimeLineEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TodayROFAdapter extends RecyclerView.Adapter<TodayROFAdapter.ViewHolder>{
 
@@ -22,6 +23,8 @@ public class TodayROFAdapter extends RecyclerView.Adapter<TodayROFAdapter.ViewHo
 
     private OnItemClickListener listener;
     private OnItemLongClickListener longClickListener;
+    private List<TimeLineEntity> data = new ArrayList<>();
+
 
     public interface OnItemClickListener {
         void onItemClick(String uuid, int status);
@@ -30,6 +33,16 @@ public class TodayROFAdapter extends RecyclerView.Adapter<TodayROFAdapter.ViewHo
     public interface OnItemLongClickListener {
         void onItemLongClickListener(String uuid);
     }
+
+//    public TodayROFAdapter(List<TimeLineEntity> data) {
+//        this.data = data;
+//    }
+//
+//    public void updateData(List<TimeLineEntity> newData) {
+//        data.clear();
+//        data.addAll(newData);
+//        notifyDataSetChanged();
+//    }
 
     public void setListener(OnItemClickListener listener) {
         this.listener = listener;

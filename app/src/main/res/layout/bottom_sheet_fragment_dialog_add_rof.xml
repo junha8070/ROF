@@ -41,6 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:hint="@string/date"
+        app:errorEnabled="true"
         app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
         app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
         app:layout_constraintTop_toBottomOf="@+id/btn_close">

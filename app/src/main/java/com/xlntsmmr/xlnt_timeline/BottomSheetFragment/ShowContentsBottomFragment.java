@@ -54,6 +54,7 @@ public class ShowContentsBottomFragment extends BottomSheetDialogFragment implem
     int currentNightMode;
     boolean isNightMode;
 
+    private ArrayList<CategoryEntity> arr_category;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,7 +113,7 @@ public class ShowContentsBottomFragment extends BottomSheetDialogFragment implem
                         @Override
                         public void onChanged(List<CategoryEntity> categoryEntities) {
 
-                            ArrayList<CategoryEntity> arr_category = new ArrayList<>();
+                            arr_category = new ArrayList<>();
                             arr_category.addAll(categoryEntities);
 
                             Collections.sort(arr_category, new Comparator<CategoryEntity>() {
@@ -238,8 +239,11 @@ public class ShowContentsBottomFragment extends BottomSheetDialogFragment implem
 
                 Chip selectedChip = binding.cgCategory.findViewById(binding.cgCategory.getCheckedChipIds().get(0));
                 int position = binding.cgCategory.indexOfChild(selectedChip);
-                String category_uuid = categoryViewModel.getAllCategories().getValue().get(position).getUuid();
-                String category = categoryViewModel.getAllCategories().getValue().get(position).getTitle();
+                String category_uuid = arr_category.get(position).getUuid();
+                String category = arr_category.get(position).getTitle();
+
+                Log.d(TAG, "선택한 카테고리: "+category);
+                Log.d(TAG, "선택한 카테고리 uuid: "+category_uuid);
 
                 // 기존의 타임라인을 불러와서 수정
                 timeLineViewModel.getTimeLineByUUID(UUID).observe(getViewLifecycleOwner(), new Observer<TimeLineEntity>() {

@@ -25,6 +25,7 @@
         android:layout_marginStart="10dp"
         android:autoSizeTextType="uniform"
         android:gravity="center_vertical|start"
+        android:padding="2dp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_status"
         app:layout_constraintEnd_toStartOf="@+id/btn_more"
         app:layout_constraintStart_toEndOf="@+id/btn_status"

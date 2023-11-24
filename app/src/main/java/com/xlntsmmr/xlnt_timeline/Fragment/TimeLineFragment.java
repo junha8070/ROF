@@ -2,6 +2,7 @@ package com.xlntsmmr.xlnt_timeline.Fragment;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -10,6 +11,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +83,14 @@ public class TimeLineFragment extends Fragment implements AddBottomSheetFragment
         // Inflate the layout for this fragment
         binding = FragmentTimeLineBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Observer 해제
+        timeLineViewModel.getAllTimelines().removeObservers(getViewLifecycleOwner());
+        Log.d(TAG, "TimelineFragment timeLineViewModel Observer is remove.");
     }
 
     @Override
@@ -346,6 +356,7 @@ public class TimeLineFragment extends Fragment implements AddBottomSheetFragment
     }
 
     private void setListeners() {
+        setupBackPressedCallback();
         binding.toolbar.setNavigationOnClickListener(v -> Navigation.findNavController(requireView()).navigate(R.id.action_timeLine_to_home));
 
         binding.btnPrev.setOnClickListener(v -> handlePrevButtonClick());
@@ -357,6 +368,14 @@ public class TimeLineFragment extends Fragment implements AddBottomSheetFragment
         binding.btnListMove.setOnClickListener(v -> navigateToListMoveFragment());
     }
 
+    private void setupBackPressedCallback() {
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Navigation.findNavController(requireView()).navigate(R.id.action_timeLine_to_home);
+            }
+        });
+    }
 
     private void modifyStatus(String uuid, int status) {
         int newStatus;
@@ -400,17 +419,17 @@ public class TimeLineFragment extends Fragment implements AddBottomSheetFragment
         }
     }
 
-    private void setShimmer() {
-        shimmerCalendarAdapter = new ShimmerCalendarAdapter();
-        binding.rvShimmer.setAdapter(shimmerCalendarAdapter);
-        binding.rvShimmer.setLayoutManager(new GridLayoutManager(getContext(), 7));
-    }
-
-    private void goneShimmer() {
-        binding.shimmerLoading.setVisibility(View.GONE);
-    }
-
-    private void visibleShimmer() {
-        binding.shimmerLoading.setVisibility(View.VISIBLE);
-    }
+//    private void setShimmer() {
+//        shimmerCalendarAdapter = new ShimmerCalendarAdapter();
+//        binding.rvShimmer.setAdapter(shimmerCalendarAdapter);
+//        binding.rvShimmer.setLayoutManager(new GridLayoutManager(getContext(), 7));
+//    }
+//
+//    private void goneShimmer() {
+//        binding.shimmerLoading.setVisibility(View.GONE);
+//    }
+//
+//    private void visibleShimmer() {
+//        binding.shimmerLoading.setVisibility(View.VISIBLE);
+//    }
 }

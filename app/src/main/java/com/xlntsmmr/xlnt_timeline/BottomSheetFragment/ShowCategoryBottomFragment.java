@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 
@@ -25,9 +26,15 @@ import java.util.List;
 public class ShowCategoryBottomFragment extends BottomSheetDialogFragment {
 
     private BottomSheetFragmentDialogEditCategoryBinding binding;
-    String category_UUID, title;
+    String flag, category_UUID, title;
 
     public ShowCategoryBottomFragment(String category_UUID, String title) {
+        this.category_UUID = category_UUID;
+        this.title = title;
+    }
+
+    public ShowCategoryBottomFragment(String flag, String category_UUID, String title) {
+        this.flag = flag;
         this.category_UUID = category_UUID;
         this.title = title;
     }
@@ -43,6 +50,10 @@ public class ShowCategoryBottomFragment extends BottomSheetDialogFragment {
         // Inflate the layout for this fragment
         binding = BottomSheetFragmentDialogEditCategoryBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
+
+//        if(flag.equals("ListMove")){
+//            binding.btnDel.setVisibility(View.GONE);
+//        }
 
         binding.editTextCategoryName.setOnKeyListener(new View.OnKeyListener() {
             @Override

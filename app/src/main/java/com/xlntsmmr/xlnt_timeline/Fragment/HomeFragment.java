@@ -7,17 +7,20 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
+import android.util.Printer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.xlntsmmr.xlnt_timeline.Adapter.TodayROFAdapter;
 import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.AddBottomSheetFragment;
 import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.AddROFBottomSheetFragment;
@@ -35,6 +38,8 @@ import com.xlntsmmr.xlnt_timeline.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -57,6 +62,8 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
 
     private ArrayList<TimeLineEntity> arr_timelines;
     private ArrayList<TimeLineEntity> today_timeline;
+    private List<TimeLineEntity> previousTimelines;
+    private ArrayList<CategoryEntity> arr_category;
 
 
     private Calendar calendar;
@@ -141,8 +148,25 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
         calendar.setTime(now);
         arr_timelines = new ArrayList<>();
         today_timeline = new ArrayList<>();
+        arr_category = new ArrayList<>();
 
-        timeLineViewModel.getAllTimelines().observe(getViewLifecycleOwner(), this::onTimelinesChanged);
+//        timeLineViewModel.getAllTimelines().observe(getViewLifecycleOwner(), this::onTimelinesChanged);
+        categoryViewModel.getAllCategories().observe(getViewLifecycleOwner(), new Observer<List<CategoryEntity>>() {
+            @Override
+            public void onChanged(List<CategoryEntity> categoryEntities) {
+                if(categoryEntities!=null){
+                    arr_category.addAll(categoryEntities);
+                    timeLineViewModel.getAllTimelines().observe(getViewLifecycleOwner(), timelines -> {
+                        if (timelines != null) {
+                            for (int i = 0; i < timelines.size(); i++) {
+                                Log.d("HomeFragment ViewModel", timelines.get(i).getContents() + " : " + timelines.get(i).getStatus());
+                            }
+                            onTimelinesChanged(timelines);
+                        }
+                    });
+                }
+            }
+        });
 
         initTodayROFAdapter();
 
@@ -152,6 +176,15 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
 
         return rootView;
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Observer 해제
+        timeLineViewModel.getAllTimelines().removeObservers(getViewLifecycleOwner());
+        Log.d(tag, "Observer is remove.");
+    }
+
 
     private void updateCountsAndLists(List<TimeLineEntity> timeLineEntities) {
         ready_count = 0;
@@ -165,7 +198,7 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
         }
         prev_timeLineEntities_size = timeLineEntities.size();
 
-        Log.d(tag, "timeLineEntities.size(): " + timeLineEntities.size());
+//        Log.d(tag, "timeLineEntities.size(): " + timeLineEntities.size());
 
         if (!timeLineEntities.isEmpty()) {
             for (TimeLineEntity timeline : timeLineEntities) {
@@ -173,22 +206,78 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
                 updateStatusCount(status);
 
                 if (isToday(timeline)) {
+                    // TODO: 코드 추가
+
                     today_timeline.add(timeline);
                 }
             }
 
+
+            Collections.sort(today_timeline, (timeline1, timeline2) -> {
+                int position1 = getCategoryPositionById(timeline1.getCategory_uuid());
+                int position2 = getCategoryPositionById(timeline2.getCategory_uuid());
+                return Integer.compare(position1, position2);
+            });
+
+
             updateUIWithCounts(timeLineEntities.size());
             setupOrUpdateTodayROFAdapter();
         }
+
+
+//        binding.visibleToggle.check(binding.btnReadyVisible.getId());
+//        binding.visibleToggle.check(binding.btnOngoingVisible.getId());
+//        binding.visibleToggle.check(binding.btnFinishVisible.getId());
+//
+//        binding.visibleToggle.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
+//            @Override
+//            public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
+//                if (isChecked) {
+//                    // 선택된 경우
+//                    if (checkedId == binding.btnReadyVisible.getId()) {
+//                        binding.btnReadyVisible.setAlpha(1);
+//                    } else if (checkedId == binding.btnOngoingVisible.getId()) {
+//                        binding.btnOngoingVisible.setAlpha(1);
+//                    } else if (checkedId == binding.btnFinishVisible.getId()) {
+//                        binding.btnFinishVisible.setAlpha(1);
+//                    }
+//                } else {
+//                    // 선택이 해제된 경우
+//                    if (checkedId == binding.btnReadyVisible.getId()) {
+//                        binding.btnReadyVisible.setAlpha(0.5f);
+//                    } else if (checkedId == binding.btnOngoingVisible.getId()) {
+//                        binding.btnOngoingVisible.setAlpha(0.5f);
+//                    } else if (checkedId == binding.btnFinishVisible.getId()) {
+//                        binding.btnFinishVisible.setAlpha(0.5f);
+//                    }
+//                }
+//            }
+//        });
+
     }
 
-    private void setupOrUpdateTodayROFAdapter() {
-        Log.d(tag, "setupOrUpdateTodayROFAdapter");
-        Log.d(tag, "setupOrUpdateTodayROFAdapter : " + today_timeline.size());
+    // getCategoryPositionById 메서드 추가
+    private int getCategoryPositionById(String categoryId) {
+        for (int i = 0; i < arr_category.size(); i++) {
+            if (arr_category.get(i).getUuid().equals(categoryId)) {
+                return arr_category.get(i).getPosition();
+            }
+        }
 
+        return -1; // 해당 categoryId를 가진 카테고리를 찾지 못한 경우
+    }
+
+
+    private void setupOrUpdateTodayROFAdapter() {
         if (todayROFAdapter == null) {
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
             binding.rvTodayRof.setLayoutManager(new GridLayoutManager(getContext(), 1));
+
+//            Collections.sort(today_timeline, (timeline1, timeline2) -> {
+//                int position1 = getCategoryPositionById(timeline1.getCategory_uuid());
+//                int position2 = getCategoryPositionById(timeline2.getCategory_uuid());
+//                return Integer.compare(position1, position2);
+//            });
 
             todayROFAdapter = new TodayROFAdapter(today_timeline);
             binding.rvTodayRof.setAdapter(todayROFAdapter);
@@ -226,7 +315,10 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
 
     private void onTimelinesChanged(List<TimeLineEntity> timeLineEntities) {
         updateCountsAndLists(timeLineEntities);
-        Log.d("HomeFragment", "사이즈: "+timeLineEntities.size());
+        for (int i = 0; i < timeLineEntities.size(); i++) {
+            Log.d("HomeFragment", timeLineEntities.get(i).getContents() + " : " + timeLineEntities.get(i).getStatus());
+        }
+
     }
 
 
@@ -260,7 +352,7 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
         }
     }
 
-    public void showContentsBottomFragment(String uuid){
+    public void showContentsBottomFragment(String uuid) {
         ShowContentsBottomFragment showContentsBottomFragment = new ShowContentsBottomFragment(uuid);
         showContentsBottomFragment.show(getParentFragmentManager(), "ShowContentsBottomFragment");
     }
@@ -376,15 +468,6 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
                 // Condition not met, do not show the InfoBottomSheetFragment
             }
         });
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-//        timeLineViewModel.getAllTimelines().removeObservers(this);
-//        categoryViewModel.getAllCategories().removeObservers(this);
-//        categoryViewModel = null;
-//        timeLineViewModel = null;
     }
 
 

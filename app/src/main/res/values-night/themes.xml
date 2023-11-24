@@ -9,6 +9,18 @@
         <item name="android:textColor">@color/white</item>
         <item name="bottomSheetDialogTheme">@style/RoundCornerBottomSheetDialogTheme</item>
         <item name="textInputStyle">@style/TextInputLayoutStyle</item>
+        <item name="fontFamily">@font/seoulnamsan_b</item>
+    </style>
+
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/bmjua</item>
+    </style>
+
+    <style name="Toolbar.TitleText_notMain" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">@font/bmjua</item>
     </style>
 
     <style name="RoundCornerBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
@@ -102,6 +114,14 @@
 
     <style name="cardBackground">
         <item name="cardBackgroundColor">@color/bottomSheetBackground_dark</item>
+    </style>
+
+    <style name="listMoveButtonToggleGroup" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/main_orange</item>
+        <item name="android:backgroundTint">@color/finish_button_toggle_selector</item>
+        <item name="android:paddingLeft">@dimen/mtrl_btn_padding_left</item>
+        <item name="android:paddingRight">@dimen/mtrl_btn_padding_right</item>
+        <item name="strokeWidth">@dimen/mtrl_btn_stroke_size</item>
     </style>
 
 </resources>

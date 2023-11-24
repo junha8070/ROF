@@ -64,6 +64,7 @@
     <color name="main_orange">#845EC2</color>
 
     <color name="light_background">#F6F7FD</color>
+    <color name="day_background">#B1B0B0</color>
 
     <color name="bottomSheetBackground_dark">#222222</color>
 </resources>

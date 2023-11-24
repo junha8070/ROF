@@ -184,6 +184,11 @@ public class AddROFBottomSheetFragment extends BottomSheetDialogFragment impleme
             public void onClick(View v) {
                 String contents = binding.edtContents.getText().toString();
 
+                if(binding.edtDate.getText().toString().isEmpty()){
+                    binding.edtDate.setError("날짜를 선택해주세요.");
+                    return;
+                }
+
                 if (contents.isEmpty() || contents.trim().isEmpty()) {
                     binding.edtContents.setError("내용을 입력해주세요.");
                     return;

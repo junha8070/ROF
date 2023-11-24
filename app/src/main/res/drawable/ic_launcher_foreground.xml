@@ -21,7 +21,7 @@
         android:strokeWidth="0"
         android:fillColor="#FF9671"
         android:fillType="nonZero"
-        android:strokeColor="#FF9671"
+        android:strokeColor="#0B8271"
         android:strokeLineCap="butt"/>
     <path
         android:pathData="M-0,210L210,210L210,140L-0,140z"
@@ -29,7 +29,7 @@
         android:strokeWidth="0"
         android:fillColor="#D65DB1"
         android:fillType="nonZero"
-        android:strokeColor="#D65DB1"
+        android:strokeColor="#0B8271"
         android:strokeLineCap="butt"/>
     <path
         android:pathData="M-0,70L210,70L210,140L-0,140z"
@@ -37,7 +37,7 @@
         android:strokeWidth="0"
         android:fillColor="#FF6F91"
         android:fillType="nonZero"
-        android:strokeColor="#FF6F91"
+        android:strokeColor="#95B696"
         android:strokeLineCap="butt"/>
   </group>
 </vector>

@@ -226,25 +226,26 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:overScrollMode="never"
+            android:layout_marginTop="10dp"
             app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
             app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
 
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/shimmer_loading"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/rv_calendar"
-            app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"
-            app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
+<!--        <com.facebook.shimmer.ShimmerFrameLayout-->
+<!--            android:id="@+id/shimmer_loading"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/rv_calendar"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/gl_entire_ver_right"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/gl_entire_ver_left"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">-->
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_shimmer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/rv_shimmer"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent" />-->
 
-        </com.facebook.shimmer.ShimmerFrameLayout>
+<!--        </com.facebook.shimmer.ShimmerFrameLayout>-->
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout4"

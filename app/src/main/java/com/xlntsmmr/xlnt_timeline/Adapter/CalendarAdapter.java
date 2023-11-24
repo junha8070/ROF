@@ -90,30 +90,51 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
 
             // 상태에 따라 이미지 설정
             if (ready_item && !onGoing_item && !finish_item) {
+                holder.iv_status_top.setAlpha(1);
+                holder.iv_status_middle.setAlpha(1);
+                holder.iv_status_bottom.setAlpha(1);
                 holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
                 holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
                 holder.iv_status_bottom.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
             } else if (!ready_item && onGoing_item && !finish_item) {
+                holder.iv_status_top.setAlpha(1);
+                holder.iv_status_middle.setAlpha(1);
+                holder.iv_status_bottom.setAlpha(1);
                 holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
                 holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
                 holder.iv_status_bottom.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
             } else if (!ready_item && !onGoing_item && finish_item) {
+                holder.iv_status_top.setAlpha(1);
+                holder.iv_status_middle.setAlpha(1);
+                holder.iv_status_bottom.setAlpha(1);
                 holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
                 holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
                 holder.iv_status_bottom.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
             } else if (ready_item && onGoing_item && !finish_item) {
+                holder.iv_status_top.setAlpha(1);
+                holder.iv_status_middle.setAlpha(1);
+                holder.iv_status_bottom.setAlpha(1);
                 holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
                 holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
                 holder.iv_status_bottom.setVisibility(View.GONE);
             } else if (ready_item && !onGoing_item && finish_item) {
+                holder.iv_status_top.setAlpha(1);
+                holder.iv_status_middle.setAlpha(1);
+                holder.iv_status_bottom.setAlpha(1);
                 holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
                 holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
                 holder.iv_status_bottom.setVisibility(View.GONE);
             } else if (!ready_item && onGoing_item && finish_item) {
+                holder.iv_status_top.setAlpha(1);
+                holder.iv_status_middle.setAlpha(1);
+                holder.iv_status_bottom.setAlpha(1);
                 holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
                 holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
                 holder.iv_status_bottom.setVisibility(View.GONE);
             } else if (ready_item && onGoing_item && finish_item) {
+                holder.iv_status_top.setAlpha(1);
+                holder.iv_status_middle.setAlpha(1);
+                holder.iv_status_bottom.setAlpha(1);
                 holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.ready_gray));
                 holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.onGoing_green));
                 holder.iv_status_bottom.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.finish_blue));
@@ -122,9 +143,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
                 holder.iv_status_top.setAlpha(0.5f);
                 holder.iv_status_middle.setAlpha(0.5f);
                 holder.iv_status_bottom.setAlpha(0.5f);
-                holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.background_gray));
-                holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.background_gray));
-                holder.iv_status_bottom.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.background_gray));
+                holder.iv_status_top.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.day_background));
+                holder.iv_status_middle.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.day_background));
+                holder.iv_status_bottom.setCardBackgroundColor(holder.itemView.getResources().getColor(R.color.day_background));
             }
         } else {
             holder.mcv_status.setVisibility(View.GONE);

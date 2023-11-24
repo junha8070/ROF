@@ -29,6 +29,16 @@ public class CategoryListMoveAdapter extends RecyclerView.Adapter<CategoryListMo
         this.onItemChangeListener = listener;
     }
 
+    public interface OnItemClickListener {
+        void clickListener(String CategoryUUID, String title);
+    }
+
+    private OnItemClickListener onItemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.onItemClickListener = listener;
+    }
+
     private ArrayList<CategoryEntity> arr_category;
 
     public CategoryListMoveAdapter(ArrayList<CategoryEntity> arr_category) {
@@ -47,6 +57,14 @@ public class CategoryListMoveAdapter extends RecyclerView.Adapter<CategoryListMo
         CategoryEntity categoryEntity = arr_category.get(position);
         Log.d(TAG, position+" : "+categoryEntity.getTitle());
         holder.tv_title.setText(categoryEntity.getTitle());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(onItemClickListener!=null){
+                    onItemClickListener.clickListener(categoryEntity.getUuid(), categoryEntity.getTitle());
+                }
+            }
+        });
     }
 
     @Override
@@ -64,8 +82,6 @@ public class CategoryListMoveAdapter extends RecyclerView.Adapter<CategoryListMo
             tv_title = itemView.findViewById(R.id.tv_title);
             btn_move = itemView.findViewById(R.id.btn_move);
         }
-
-
     }
 
     public void onItemMove(int fromPosition, int toPosition) {
@@ -73,7 +89,9 @@ public class CategoryListMoveAdapter extends RecyclerView.Adapter<CategoryListMo
         arr_category.remove(fromPosition);
         arr_category.add(toPosition, fromCategory);
         notifyItemMoved(fromPosition, toPosition);
-        onItemChangeListener.setPosition(arr_category);
+        if (onItemChangeListener != null) {
+            onItemChangeListener.setPosition(arr_category);
+        }
     }
 
 }
