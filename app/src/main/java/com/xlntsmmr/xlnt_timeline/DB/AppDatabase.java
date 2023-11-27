@@ -7,8 +7,8 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.xlntsmmr.xlnt_timeline.Dao.CategoryDao;
-import com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity;
 import com.xlntsmmr.xlnt_timeline.Dao.TimeLineDao;
+import com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity;
 import com.xlntsmmr.xlnt_timeline.Entity.TimeLineEntity;
 
 @Database(entities = {CategoryEntity.class, TimeLineEntity.class}, version = 1)

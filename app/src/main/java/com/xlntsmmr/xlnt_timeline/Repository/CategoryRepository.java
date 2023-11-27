@@ -5,9 +5,9 @@ import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
 
+import com.xlntsmmr.xlnt_timeline.DB.AppDatabase;
 import com.xlntsmmr.xlnt_timeline.Dao.CategoryDao;
 import com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity;
-import com.xlntsmmr.xlnt_timeline.DB.AppDatabase;
 
 import java.util.List;
 

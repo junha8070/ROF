@@ -1,32 +1,28 @@
 package com.xlntsmmr.xlnt_timeline.BottomSheetFragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.chip.Chip;
 import com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity;
-import com.xlntsmmr.xlnt_timeline.Fragment.HomeFragment;
-import com.xlntsmmr.xlnt_timeline.R;
 import com.xlntsmmr.xlnt_timeline.Entity.TimeLineEntity;
+import com.xlntsmmr.xlnt_timeline.R;
 import com.xlntsmmr.xlnt_timeline.ViewModel.CategoryViewModel;
 import com.xlntsmmr.xlnt_timeline.databinding.BottomSheetFragmentDialogAddRofBinding;
 

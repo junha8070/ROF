@@ -1,13 +1,10 @@
 package com.xlntsmmr.xlnt_timeline.Fragment;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
-import android.util.Printer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +17,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.xlntsmmr.xlnt_timeline.Adapter.TodayROFAdapter;
 import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.AddBottomSheetFragment;
 import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.AddROFBottomSheetFragment;
@@ -39,7 +35,6 @@ import com.xlntsmmr.xlnt_timeline.databinding.FragmentHomeBinding;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -435,16 +430,13 @@ public class HomeFragment extends Fragment implements AddBottomSheetFragment.OnA
         currentVersion = getVersionName(requireActivity());
         boolean isRemoteConfigLoadFinish = Boolean.TRUE.equals(configViewModel.getIsRemoteConfigLoadFinish().getValue());
         boolean forceUpdate = configViewModel.getForceUpdate();
-
         String latestVersion = isRemoteConfigLoadFinish ? configViewModel.getLatestVersion() : "버전 확인 중";
         String minVersion = isRemoteConfigLoadFinish ? configViewModel.getMinVersion() : "버전 확인 중";
-        String updateNewsJson = isRemoteConfigLoadFinish ? configViewModel.getUpdateNewsJson() : "버전 확인 중";
-        String jsonLatestVersion = isRemoteConfigLoadFinish ? configViewModel.getJsonLatestVersion() : "버전 확인 중";
-        String jsonUpdateNews = isRemoteConfigLoadFinish ? configViewModel.getJsonUpdateNews() : "버전 확인 중";
-        String jsonNewFunction = isRemoteConfigLoadFinish ? configViewModel.getJsonNewFunction() : "버전 확인 중";
+        String updateNews = isRemoteConfigLoadFinish ? configViewModel.getUpdateNews() : "버전 확인 중";
+        String newFunction = isRemoteConfigLoadFinish ? configViewModel.getNewFunction() : "버전 확인 중";
 
         InfoBottomSheetFragment infoBottomSheetFragment = new InfoBottomSheetFragment(
-                currentVersion, forceUpdate, latestVersion, minVersion, jsonLatestVersion, jsonUpdateNews, jsonNewFunction);
+                currentVersion, forceUpdate, latestVersion, minVersion, updateNews, newFunction);
 
         // forceUpdate가 true일 때 setCancelable(false) 적용
         if (forceUpdate && !latestVersion.equals(currentVersion)) {

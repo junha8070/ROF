@@ -5,16 +5,10 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.xlntsmmr.xlnt_timeline.DTO.ConfigUpdateNewsDTO;
-
-import java.util.List;
 
 public class RemoteConfigRepository {
 
     private FirebaseRemoteConfig mFirebaseRemoteConfig;
-    Gson gson;
     MutableLiveData<Boolean> isRemoteConfigLoadFinish;
 
     public RemoteConfigRepository() {
@@ -24,8 +18,6 @@ public class RemoteConfigRepository {
                 .setMinimumFetchIntervalInSeconds(3600) // 캐시된 값을 사용할 시간 설정 (초)
                 .build();
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-
-        gson = new Gson();
     }
 
     public void fetchRemoteConfig() {
@@ -52,33 +44,12 @@ public class RemoteConfigRepository {
         return mFirebaseRemoteConfig.getString("min_ver");
     }
 
-    public String getUpdateNewsJson(){
+    public String getNewFunction(){
+        return mFirebaseRemoteConfig.getString("new_function");
+    }
+
+    public String getUpdateNews(){
         return mFirebaseRemoteConfig.getString("update_news");
-    }
-
-    public List<ConfigUpdateNewsDTO> configUpdateNewsDTO(String updateNewsJsonString){
-        return gson.fromJson(updateNewsJsonString, new TypeToken<List<ConfigUpdateNewsDTO>>(){}.getType());
-    }
-
-    public String getJsonLatestVersion(){
-        if(configUpdateNewsDTO(getUpdateNewsJson())!=null){
-            return configUpdateNewsDTO(getUpdateNewsJson()).get(configUpdateNewsDTO(getUpdateNewsJson()).size()-1).getLatest_ver();
-        }
-        return "버전 확인 중";
-    }
-
-    public String getJsonUpdateNews(){
-        if(configUpdateNewsDTO(getUpdateNewsJson())!=null){
-            return configUpdateNewsDTO(getUpdateNewsJson()).get(configUpdateNewsDTO(getUpdateNewsJson()).size()-1).getUpdate_news();
-        }
-        return "버전 확인 중";
-    }
-
-    public String getJsonNewFunction(){
-        if(configUpdateNewsDTO(getUpdateNewsJson())!=null){
-            return configUpdateNewsDTO(getUpdateNewsJson()).get(configUpdateNewsDTO(getUpdateNewsJson()).size()-1).getNew_function();
-        }
-        return "버전 확인 중";
     }
 
     public LiveData<Boolean> getIsRemoteConfigLoadFinish() {

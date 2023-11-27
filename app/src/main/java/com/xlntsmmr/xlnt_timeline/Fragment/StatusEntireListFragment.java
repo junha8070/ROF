@@ -1,35 +1,31 @@
 package com.xlntsmmr.xlnt_timeline.Fragment;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.xlntsmmr.xlnt_timeline.Adapter.ContentAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.xlntsmmr.xlnt_timeline.Adapter.TimeLineAdapter;
 import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.ShowCategoryBottomFragment;
 import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.ShowContentsBottomFragment;
 import com.xlntsmmr.xlnt_timeline.DTO.ContentDTO;
+import com.xlntsmmr.xlnt_timeline.DTO.TimeDTO;
+import com.xlntsmmr.xlnt_timeline.DTO.TimeLineDTO;
 import com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity;
 import com.xlntsmmr.xlnt_timeline.Entity.TimeLineEntity;
 import com.xlntsmmr.xlnt_timeline.R;
-import com.xlntsmmr.xlnt_timeline.DTO.TimeDTO;
-import com.xlntsmmr.xlnt_timeline.DTO.TimeLineDTO;
-import com.xlntsmmr.xlnt_timeline.databinding.FragmentStatusEntireListBinding;
 import com.xlntsmmr.xlnt_timeline.ViewModel.CategoryViewModel;
 import com.xlntsmmr.xlnt_timeline.ViewModel.TimeLineViewModel;
+import com.xlntsmmr.xlnt_timeline.databinding.FragmentStatusEntireListBinding;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;

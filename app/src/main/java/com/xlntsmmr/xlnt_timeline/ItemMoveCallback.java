@@ -1,12 +1,9 @@
 package com.xlntsmmr.xlnt_timeline;
 
-import android.util.Log;
-
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.xlntsmmr.xlnt_timeline.Adapter.CalendarAdapter;
 import com.xlntsmmr.xlnt_timeline.Adapter.CategoryListMoveAdapter;
 
 public class ItemMoveCallback extends ItemTouchHelper.Callback {

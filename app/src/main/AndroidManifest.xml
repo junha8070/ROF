@@ -17,11 +17,6 @@
         android:theme="@style/Theme.Xlnt_TimeLine"
         tools:targetApi="31">
 
-        <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3511554005210834~4212186135"/>
-
         <activity
             android:name=".MainActivity"
             android:exported="true">

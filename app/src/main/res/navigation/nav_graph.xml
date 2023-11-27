@@ -18,14 +18,7 @@
         <action
             android:id="@+id/action_timeLine_to_listMoveDialog"
             app:destination="@id/listMoveDialogFragment" >
-            <argument
-                android:name="arr_category"
-                app:argType="com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity[]" />
-
         </action>
-        <argument
-            android:name="arr_category"
-            app:argType="com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity[]" />
 
 
     </fragment>

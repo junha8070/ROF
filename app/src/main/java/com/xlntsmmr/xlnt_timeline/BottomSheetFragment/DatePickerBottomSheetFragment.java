@@ -8,13 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.xlntsmmr.xlnt_timeline.R;
-import com.xlntsmmr.xlnt_timeline.databinding.BottomSheetFragmentDialogAddCategoryBinding;
 import com.xlntsmmr.xlnt_timeline.databinding.BottomSheetFragmentDialogSetCalendarBinding;
-
-
-import android.widget.NumberPicker;
 
 import java.util.Calendar;
 

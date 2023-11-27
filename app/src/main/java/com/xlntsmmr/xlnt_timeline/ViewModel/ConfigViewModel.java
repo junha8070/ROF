@@ -1,8 +1,5 @@
 package com.xlntsmmr.xlnt_timeline.ViewModel;
 
-import android.app.Application;
-
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -33,20 +30,12 @@ public class ConfigViewModel extends ViewModel {
         return mRemoteConfigRepository.getMinVersion();
     }
 
-    public String getUpdateNewsJson() {
-        return mRemoteConfigRepository.getUpdateNewsJson();
+    public String getUpdateNews() {
+        return mRemoteConfigRepository.getUpdateNews();
     }
 
-    public String getJsonLatestVersion(){
-        return mRemoteConfigRepository.getJsonLatestVersion();
-    }
-
-    public String getJsonUpdateNews(){
-        return mRemoteConfigRepository.getJsonUpdateNews();
-    }
-
-    public String getJsonNewFunction(){
-        return mRemoteConfigRepository.getJsonNewFunction();
+    public String getNewFunction() {
+        return mRemoteConfigRepository.getNewFunction();
     }
 
     public LiveData<Boolean> getIsRemoteConfigLoadFinish() {

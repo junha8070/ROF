@@ -1,11 +1,8 @@
 package com.xlntsmmr.xlnt_timeline.Adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
 import com.xlntsmmr.xlnt_timeline.DTO.CalendarDayDTO;
-import com.xlntsmmr.xlnt_timeline.R;
 import com.xlntsmmr.xlnt_timeline.Entity.TimeLineEntity;
+import com.xlntsmmr.xlnt_timeline.R;
 
 import java.util.ArrayList;
 import java.util.List;

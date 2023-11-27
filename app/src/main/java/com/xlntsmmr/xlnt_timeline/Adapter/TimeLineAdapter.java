@@ -10,11 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.chip.Chip;
-import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.CategoryBottomSheetFragment;
-import com.xlntsmmr.xlnt_timeline.Fragment.HomeFragment;
-import com.xlntsmmr.xlnt_timeline.R;
 import com.xlntsmmr.xlnt_timeline.DTO.TimeLineDTO;
 import com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity;
+import com.xlntsmmr.xlnt_timeline.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

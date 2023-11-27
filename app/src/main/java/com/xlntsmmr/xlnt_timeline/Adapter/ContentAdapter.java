@@ -9,11 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 import com.xlntsmmr.xlnt_timeline.DTO.ContentDTO;
-import com.xlntsmmr.xlnt_timeline.R;
 import com.xlntsmmr.xlnt_timeline.DTO.TimeLineDTO;
+import com.xlntsmmr.xlnt_timeline.R;
 
 import java.util.ArrayList;
 

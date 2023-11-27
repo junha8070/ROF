@@ -3,9 +3,6 @@ package com.xlntsmmr.xlnt_timeline.BottomSheetFragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,19 +18,16 @@ public class InfoBottomSheetFragment extends BottomSheetDialogFragment {
     boolean forceUpdate;
     String latestVersion;
     String minVersion;
-    //    String updateNewsJson;
-    String jsonLatestVersion;
-    String jsonUpdateNews;
-    String jsonNewFunction;
+    String updateNews;
+    String newFunction;
 
-    public InfoBottomSheetFragment(String currentVersion, boolean forceUpdate, String latestVersion, String minVersion, String jsonLatestVersion, String jsonUpdateNews, String jsonNewFunction) {
+    public InfoBottomSheetFragment(String currentVersion, boolean forceUpdate, String latestVersion, String minVersion, String updateNews, String newFunction) {
         this.currentVersion = currentVersion;
         this.forceUpdate = forceUpdate;
         this.latestVersion = latestVersion;
         this.minVersion = minVersion;
-        this.jsonLatestVersion = jsonLatestVersion;
-        this.jsonUpdateNews = jsonUpdateNews;
-        this.jsonNewFunction = jsonNewFunction;
+        this.updateNews = updateNews;
+        this.newFunction = newFunction;
     }
 
     @Override
@@ -51,7 +45,7 @@ public class InfoBottomSheetFragment extends BottomSheetDialogFragment {
             binding.btnClose.setVisibility(View.INVISIBLE);
         }
 
-        binding.tvContent.setText(String.format("%s\n%s", jsonUpdateNews, jsonNewFunction));
+        binding.tvContent.setText(String.format("%s\n%s", updateNews, newFunction));
         binding.tvNowVer.setText(currentVersion);
         binding.tvLatestVer.setText(latestVersion);
 

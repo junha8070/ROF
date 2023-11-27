@@ -1,6 +1,10 @@
 package com.xlntsmmr.xlnt_timeline.Fragment;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -10,11 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.xlntsmmr.xlnt_timeline.Adapter.CalendarAdapter;
 import com.xlntsmmr.xlnt_timeline.Adapter.ShimmerCalendarAdapter;
@@ -26,11 +25,11 @@ import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.ShowCategoryBottomFragment
 import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.ShowContentsBottomFragment;
 import com.xlntsmmr.xlnt_timeline.DTO.CalendarDayDTO;
 import com.xlntsmmr.xlnt_timeline.DTO.ContentDTO;
-import com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity;
-import com.xlntsmmr.xlnt_timeline.R;
 import com.xlntsmmr.xlnt_timeline.DTO.TimeDTO;
 import com.xlntsmmr.xlnt_timeline.DTO.TimeLineDTO;
+import com.xlntsmmr.xlnt_timeline.Entity.CategoryEntity;
 import com.xlntsmmr.xlnt_timeline.Entity.TimeLineEntity;
+import com.xlntsmmr.xlnt_timeline.R;
 import com.xlntsmmr.xlnt_timeline.ViewModel.CategoryViewModel;
 import com.xlntsmmr.xlnt_timeline.ViewModel.TimeLineViewModel;
 import com.xlntsmmr.xlnt_timeline.databinding.FragmentTimeLineBinding;
@@ -192,7 +191,6 @@ public class TimeLineFragment extends Fragment implements AddBottomSheetFragment
 
     private void navigateToListMoveFragment() {
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("category_list", arr_category);
         bundle.putString("navigate", "timeline");
         Navigation.findNavController(requireView()).navigate(R.id.action_timeLine_to_listMoveDialog, bundle);
     }

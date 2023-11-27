@@ -1,12 +1,10 @@
 package com.xlntsmmr.xlnt_timeline.Fragment;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -18,7 +16,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.xlntsmmr.xlnt_timeline.Adapter.CategoryListMoveAdapter;
 import com.xlntsmmr.xlnt_timeline.BottomSheetFragment.ShowCategoryBottomFragment;
 import com.xlntsmmr.xlnt_timeline.DialogFragmet.LoadingDialogFragment;
@@ -29,7 +26,6 @@ import com.xlntsmmr.xlnt_timeline.ViewModel.CategoryViewModel;
 import com.xlntsmmr.xlnt_timeline.databinding.FragmentListMoveDialogBinding;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
